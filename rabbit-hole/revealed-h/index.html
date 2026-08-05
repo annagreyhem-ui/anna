@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="de">
+<head>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous"></script>
+<script>
+  Sentry.onLoad(function () {
+    Sentry.init({ release: "anna-greyhem-website@1.0.0" });
+  });
+</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0a0c" />
+<link rel="icon" href="/favicon.ico" sizes="any">
+<title>Anna Greyhem</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<script>
+(function(){
+  var t = (location.search.match(/[?&]t=([^&]+)/) || [])[1];
+  if (!t) return;
+  var base = location.href.split('/rabbit-hole/')[0] + '/';
+  function fixCSS(){
+    if (getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()) return;
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = base + 'assets/fonts/fonts.css?t=' + t; document.head.appendChild(l);
+  }
+  function fixImg(img){
+    img.addEventListener('error', function retry(){
+      img.removeEventListener('error', retry);
+      img.src = base + img.getAttribute('data-src') + '?t=' + t;
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    fixCSS();
+    document.querySelectorAll('img[data-src]').forEach(fixImg);
+  });
+})();
+</script>
+<style>
+:root{--ink:#0a0a0c;--bone:#eeeae0;--bone-3:#8a8478;--bone-4:#2a2823;--serif:'Cormorant Garamond','EB Garamond',Garamond,serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--bone);height:100%;overflow:hidden}
+*{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+button{-webkit-tap-highlight-color:transparent}
+button{outline:none}
+button:focus-visible{outline:1px solid var(--bone-3);outline-offset:2px}
+body{font-family:var(--serif);display:flex;align-items:center;justify-content:center;text-align:center}
+.stage{position:relative;width:100vw;height:100vh;max-width:calc(100vh * 941 / 1672);max-height:calc(100vw * 1672 / 941);margin:auto;overflow:hidden}
+.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 1.1s ease}
+.stage img.dark{opacity:1}
+.stage img.lit{opacity:0}
+.stage.lit-on img.dark{opacity:0}
+.stage.lit-on img.lit{opacity:1}
+.hotspot{position:absolute;cursor:pointer;background:none;border:0;padding:0}
+.hotspot.off{left:3%;top:44%;width:17%;height:6%}
+.hotspot.on{left:3%;top:44%;width:17%;height:6%}
+.hint{position:absolute;left:24%;top:44%;max-width:180px;text-align:left;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--bone-3);line-height:1.6;pointer-events:none;text-wrap:pretty}
+.hint span{display:block;opacity:0;transition:opacity 1.2s ease}
+.hint span.show{opacity:.85}
+.tap-point{position:absolute;left:11.5%;top:47%;width:14px;height:14px;transform:translate(-50%,-50%);border-radius:50%;border:1px solid var(--bone-3);opacity:0;transition:opacity .8s ease;pointer-events:none}
+.tap-point.show{opacity:.8;animation:tap-pulse 1.8s ease-in-out infinite}
+@keyframes tap-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.8}50%{transform:translate(-50%,-50%) scale(1.7);opacity:.25}}
+.qr-legal{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:80;display:inline-flex;align-items:center;gap:12px;white-space:nowrap;opacity:0.5;transition:opacity .7s ease}
+.qr-legal:hover,.qr-legal:focus-within,.qr-legal[data-near="true"]{opacity:1}
+.qr-legal .mark{font-family:var(--serif);font-weight:300;font-size:13px;letter-spacing:.02em;color:var(--bone-2);text-decoration:none}
+.qr-legal .mark em{font-style:italic}
+.qr-legal a:not(.mark){font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-3);text-decoration:none;min-height:36px;display:inline-flex;align-items:center;transition:color .4s ease}
+.qr-legal a:not(.mark):hover{color:var(--bone)}
+.qr-legal .sep{color:var(--bone-4);font-size:10px}
+body::after{content:"";position:fixed;left:0;right:0;bottom:-20px;height:170px;background:linear-gradient(to top,var(--ink) 20%,rgba(10,10,12,.75) 45%,transparent 100%);pointer-events:none;z-index:75}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+<img class="dark" src="https://cdn.annagreyhem.com/rabbit-hole/desk-dark.png" onerror="this.onerror=null;this.src='../../assets/images/desk/desk-dark.png'" alt="a dark room, only a lamp switch visible" />
+<img class="lit" src="https://cdn.annagreyhem.com/rabbit-hole/desk-lit-lamp-only.png" onerror="this.onerror=null;this.src='../../assets/images/desk/desk-lit-lamp-only.png'" alt="a desk lit by a lamp, otherwise empty" />
+<div class="tap-point" id="tapPoint"></div>
+<button class="hotspot off" id="hotOff" aria-label="Lampe einschalten"></button>
+<button class="hotspot on" id="hotOn" aria-label="Lampe ausschalten" style="display:none"></button>
+<div class="hint" id="hint"><span id="hint1">I can't see.</span><span id="hint2">It's too dark in here.</span></div>
+</div>
+<nav class="qr-legal" aria-label="Legal">
+<a class="mark" href="/">Anna <em>Greyhem</em></a>
+<span class="sep" aria-hidden="true">·</span>
+<a href="/impressum/">Legal Notice</a>
+<span class="sep" aria-hidden="true">·</span>
+<a href="/datenschutz/">Privacy</a>
+<span class="sep" aria-hidden="true">·</span>
+<a href="/ai-info/">AI Info</a>
+</nav>
+<script>
+var stage = document.getElementById('stage');
+var hotOff = document.getElementById('hotOff');
+var hotOn = document.getElementById('hotOn');
+var hint1 = document.getElementById('hint1');
+var hint2 = document.getElementById('hint2');
+var tapPoint = document.getElementById('tapPoint');
+var hintTimer = setTimeout(function(){ hint1.classList.add('show'); }, 2600);
+var hintTimer2 = setTimeout(function(){ hint2.classList.add('show'); }, 4400);
+var tapTimer = setTimeout(function(){ tapPoint.classList.add('show'); }, 6200);
+
+function setLight(on){
+  stage.classList.toggle('lit-on', on);
+  hotOff.style.display = on ? 'none' : 'block';
+  hotOn.style.display = on ? 'block' : 'none';
+  if (on) {
+    clearTimeout(hintTimer);
+    clearTimeout(hintTimer2);
+    clearTimeout(tapTimer);
+    hint1.classList.remove('show');
+    hint2.classList.remove('show');
+    tapPoint.classList.remove('show');
+  }
+}
+hotOff.addEventListener('click', function(){ setLight(true); });
+hotOn.addEventListener('click', function(){ setLight(false); });
+
+var uiAudioCtx;
+function uiAudioReady(cb){
+  if (!uiAudioCtx) uiAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (uiAudioCtx.state === 'suspended') { uiAudioCtx.resume().then(cb).catch(cb); }
+  else { cb(); }
+}
+function uiClickSound(){
+  uiAudioReady(function(){
+    var t = uiAudioCtx.currentTime;
+    var dur = 0.045;
+    var buf = uiAudioCtx.createBuffer(1, Math.floor(uiAudioCtx.sampleRate * dur), uiAudioCtx.sampleRate);
+    var data = buf.getChannelData(0);
+    for (var i = 0; i < data.length; i++) { data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 3); }
+    var noise = uiAudioCtx.createBufferSource();
+    noise.buffer = buf;
+    var filter = uiAudioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 2200;
+    filter.Q.value = 0.25;
+    var gain = uiAudioCtx.createGain();
+    gain.gain.value = 0.32;
+    noise.connect(filter).connect(gain).connect(uiAudioCtx.destination);
+    noise.start(0);
+  });
+}
+document.addEventListener('touchend', function(){
+  var kickAudio = document.getElementById('silentUnlock');
+  if (kickAudio) { kickAudio.play().catch(function(){}); }
+  if (!uiAudioCtx) uiAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  var primeUnlock = function(){
+    var dur = 0.4;
+    var len = Math.floor(uiAudioCtx.sampleRate * dur);
+    var buf = uiAudioCtx.createBuffer(1, len, uiAudioCtx.sampleRate);
+    var data = buf.getChannelData(0);
+    for (var i = 0; i < len; i++) { data[i] = (Math.random() * 2 - 1) * 0.002; }
+    var src = uiAudioCtx.createBufferSource();
+    src.buffer = buf;
+    src.connect(uiAudioCtx.destination);
+    src.start(0);
+  };
+  if (uiAudioCtx.state === 'suspended') { uiAudioCtx.resume().then(primeUnlock).catch(primeUnlock); }
+  else { primeUnlock(); }
+}, { once: true, passive: true });
+document.addEventListener('click', function(e){
+  if (e.target.closest('button, .notebook-frame, .manuscript-frame, .polaroids-frame, .dried')) uiClickSound();
+}, true);
+(function () {
+  var legal = document.querySelector('.qr-legal');
+  if (!legal) return;
+  var nearT;
+  function near() {
+    legal.setAttribute('data-near', 'true');
+    clearTimeout(nearT);
+    nearT = setTimeout(function () { legal.setAttribute('data-near', 'false'); }, 2600);
+  }
+  function check(y) { if (y >= window.innerHeight - 120) near(); }
+  window.addEventListener('pointermove', function (e) { check(e.clientY); }, { passive: true });
+  window.addEventListener('touchstart', function (e) {
+    if (e.touches && e.touches[0]) check(e.touches[0].clientY);
+  }, { passive: true });
+})();
+</script>
+<script data-goatcounter="https://annagreyhem.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<audio id="silentUnlock" playsinline preload="auto" src="../../assets/audio/silence.wav"></audio>
+</body>
+</html>
