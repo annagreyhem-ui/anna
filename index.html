@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="de">
+<head>
+<!-- Sentry error monitoring -->
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous"></script>
+<script>
+  Sentry.onLoad(function () {
+    Sentry.init({ release: "anna-greyhem-website@1.0.0" });
+  });
+</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0a0c" />
+<link rel="icon" href="/favicon.ico" sizes="any">
+<title>Anna Greyhem</title>
+<meta name="description" content="Anna Greyhem — coming soon." />
+<meta name="robots" content="noindex, nofollow" />
+<link rel="stylesheet" href="../assets/fonts/fonts.css">
+<style>
+:root{--ink:#0a0a0c;--bone:#eeeae0;--bone-2:#c9c4b8;--bone-3:#8a8478;--bone-4:#2a2823;--cherry:#9e2438;--cherry-3:#c33149;--serif:'Cormorant Garamond','EB Garamond',Garamond,serif;--read:'Newsreader','Cormorant Garamond',Georgia,serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--bone);min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:var(--serif);display:flex;flex-direction:column;align-items:center;min-height:100vh;text-align:center;position:relative;overflow-x:hidden}
+.content{flex:1 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(40px,7vh,56px);padding:24px;width:100%}
+.mark{font-size:15px;letter-spacing:.3em;text-transform:uppercase;color:var(--bone-3)}
+.tagline{font-family:var(--serif);font-size:clamp(20px,3.4vw,28px);font-style:normal;font-weight:400;color:var(--bone-2);line-height:1.6;max-width:480px}
+.countdown{display:flex;gap:clamp(10px,4vw,56px);flex-wrap:nowrap}
+.unit{display:flex;flex-direction:column;align-items:center;gap:10px}
+.unit .num{font-size:clamp(40px,9vw,84px);font-weight:400;line-height:1;font-variant-numeric:tabular-nums}
+.unit .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-3)}
+.countdown .sep{font-size:clamp(40px,9vw,84px);color:var(--bone-4);align-self:flex-start;margin-top:2px}
+.gate{display:flex;flex-direction:column;align-items:center;gap:6px}
+.gate-row{display:flex;align-items:baseline;gap:14px}
+.gate input{background:transparent;border:0;border-bottom:1px solid var(--bone-4);color:var(--bone);font-family:var(--serif);font-style:italic;font-size:20px;letter-spacing:.04em;text-align:center;padding:8px 2px 10px;width:min(200px,58vw);outline:none;transition:border-color .3s ease}
+.gate input::placeholder{color:var(--bone-3);opacity:.6}
+.gate input:focus{border-color:var(--bone-3)}
+.gate input.err{border-color:var(--cherry)}
+.gate button{background:none;border:0;color:var(--bone-3);font-family:var(--serif);font-style:italic;font-size:22px;line-height:1;padding:0 0 10px;cursor:pointer;flex-shrink:0;transition:color .3s ease,transform .3s ease}
+.gate button:hover,.gate button:active{color:var(--bone);transform:translateX(3px)}
+.hint{font-family:var(--mono);font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--bone-3);opacity:.4;margin-top:8px}
+.msg{font-family:var(--mono);font-size:11px;letter-spacing:.15em;color:var(--cherry);min-height:14px;opacity:0;transition:opacity .3s ease}
+.msg.show{opacity:1}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.shake{animation:shake .3s ease}
+footer.site-footer{flex-shrink:0;text-align:center;padding:24px 18px;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:2px 14px}
+footer.site-footer .foot-mark{font-family:var(--serif);font-weight:300;font-size:16px;color:var(--bone);text-decoration:none;transition:color .4s ease}
+footer.site-footer .foot-mark em{font-style:italic}
+footer.site-footer .foot-mark:hover{color:#fff}
+footer.site-footer .foot-legal{display:flex;flex-wrap:wrap;gap:2px 14px;align-items:center}
+footer.site-footer .foot-legal a{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-3);text-decoration:none;transition:color .4s ease}
+footer.site-footer .foot-legal a span{border-bottom:1px solid transparent;padding-bottom:2px;transition:border-color .4s ease}
+footer.site-footer .foot-legal a:hover{color:var(--bone-2)}
+footer.site-footer .foot-legal a:hover span{border-color:var(--bone-3)}
+footer.site-footer .sep{color:var(--bone-4);font-size:14px}
+#fall-screen{position:fixed;inset:0;background:var(--ink);display:none;overflow:hidden;z-index:85}
+#fall-screen.active{display:block}
+#tunnel{position:absolute;left:50%;top:0;transform:translateX(-50%);width:220px;height:100%}
+.ring{position:absolute;left:50%;top:45%;transform:translateX(-50%);border-radius:50%;border:1px solid rgba(238,234,224,0.07);animation:ring-zoom linear infinite}
+@keyframes ring-zoom{0%{opacity:0;width:40px;height:14px;margin-top:0}20%{opacity:.35}80%{opacity:.12}100%{opacity:0;width:600px;height:200px;margin-top:-93px}}
+.mote{position:absolute;border-radius:50%;animation:mote-fall linear infinite,mote-twinkle ease-in-out infinite}
+@keyframes mote-fall{0%{transform:translateY(-10vh) scale(.7);opacity:0}15%{opacity:.9}85%{opacity:.7}100%{transform:translateY(110vh) scale(1.2);opacity:0}}
+@keyframes mote-twinkle{0%,100%{filter:brightness(1) saturate(1)}50%{filter:brightness(2.2) saturate(1.6)}}
+#fall-text{position:absolute;left:50%;top:12vh;transform:translateX(-50%);width:min(34ch,82vw);z-index:20;display:flex;flex-wrap:wrap;justify-content:center;align-content:flex-start;column-gap:.32em;row-gap:.3em}
+#fall-text .fw{font-family:var(--read);font-size:clamp(21px,5.6vw,24px);line-height:1.4;color:var(--bone);display:inline-block;opacity:0;will-change:transform,opacity;animation:word-fall linear forwards}
+@keyframes word-fall{0%{transform:translateY(0) rotate(0deg) translateX(0);opacity:0}10%{opacity:1}80%{opacity:.9}100%{transform:translateY(var(--fy)) rotate(var(--rot)) translateX(var(--dx));opacity:0}}
+@media (prefers-reduced-motion:reduce){#fall-screen *{animation-duration:.001ms!important;animation-iteration-count:1!important}}
+</style>
+</head>
+<body>
+<div id="fall-screen"><div id="tunnel"></div><div id="fall-text"></div></div>
+<div class="content">
+<div class="mark">Anna Greyhem</div>
+<div class="countdown" id="countdown">
+<div class="unit"><div class="num" id="d">00</div><div class="lbl">Days</div></div>
+<div class="sep">:</div>
+<div class="unit"><div class="num" id="h">00</div><div class="lbl">Hrs</div></div>
+<div class="sep">:</div>
+<div class="unit"><div class="num" id="m">00</div><div class="lbl">Min</div></div>
+<div class="sep">:</div>
+<div class="unit"><div class="num" id="s">00</div><div class="lbl">Sec</div></div>
+</div>
+<div class="tagline">Some doors open on their own.<br>Others don't.</div>
+<form class="gate" id="gateForm" autocomplete="off">
+<div class="gate-row">
+<input type="password" id="pw" placeholder="the password" autocomplete="off" />
+<button type="submit" aria-label="confirm">&#8594;</button>
+</div>
+<div class="msg" id="msg"></div>
+</form>
+</div>
+<footer class="site-footer">
+<span class="foot-mark">Anna <em>Greyhem</em></span>
+<span class="sep">·</span>
+<div class="foot-legal">
+<a href="/impressum/"><span>Legal Notice</span></a>
+<span class="sep">·</span>
+<a href="/datenschutz/"><span>Privacy Policy</span></a>
+</div>
+</footer>
+<script>
+var target = new Date('2026-09-25T22:00:00+02:00');
+function pad(n){return String(n).padStart(2,'0')}
+function tick(){
+  var diff = target - new Date();
+  if (diff < 0) diff = 0;
+  var d = Math.floor(diff / 86400000);
+  var h = Math.floor(diff % 86400000 / 3600000);
+  var m = Math.floor(diff % 3600000 / 60000);
+  var s = Math.floor(diff % 60000 / 1000);
+  document.getElementById('d').textContent = pad(d);
+  document.getElementById('h').textContent = pad(h);
+  document.getElementById('m').textContent = pad(m);
+  document.getElementById('s').textContent = pad(s);
+}
+tick(); setInterval(tick, 1000);
+
+var form = document.getElementById('gateForm');
+var pw = document.getElementById('pw');
+var msg = document.getElementById('msg');
+var fallScreen = document.getElementById('fall-screen');
+var MAP = {
+  'howlifefeels': 'revealed', 'h': 'revealed-h', 'ho': 'revealed-ho', 'how': 'revealed-how',
+  'howl': 'revealed-howl', 'howli': 'revealed-howli', 'howlif': 'revealed-howlif', 'howlife': 'revealed-howlife',
+  'howlifef': 'revealed-howlifef', 'howlifefe': 'revealed-howlifefe', 'howlifefee': 'revealed-howlifefee', 'howlifefeel': 'revealed-howlifefeel'
+};
+function startFall(folder){
+  fallScreen.classList.add('active');
+  var tunnel = document.getElementById('tunnel');
+  for (var i = 0; i < 18; i++) {
+    var ring = document.createElement('div');
+    ring.className = 'ring';
+    var duration = 1.2 + Math.random() * 0.8;
+    var delay = i * 0.28;
+    ring.style.cssText = 'top:' + (30 + Math.random() * 40) + '%;animation-duration:' + duration + 's;animation-delay:' + delay + 's;';
+    tunnel.appendChild(ring);
+  }
+  var colors = ['#f5f0e6', '#8fb3c9', '#c9d6e0', '#d9a5b3'];
+  for (var j = 0; j < 40; j++) {
+    var m = document.createElement('div');
+    m.className = 'mote';
+    var size = 4 + Math.random() * 6;
+    var x = 6 + Math.random() * 88;
+    var md = 3 + Math.random() * 3;
+    var mdelay = Math.random() * 3;
+    var col = colors[Math.floor(Math.random() * colors.length)];
+    var twd = 0.6 + Math.random() * 1.2;
+    m.style.cssText = 'left:' + x + '%;top:' + (-10 + Math.random() * 20) + '%;width:' + size + 'px;height:' + size + 'px;background:' + col + ';box-shadow:0 0 ' + (size * 2) + 'px ' + col + ';opacity:' + (0.6 + Math.random() * 0.3) + ';animation-duration:' + md + 's,' + twd + 's;animation-delay:' + mdelay + 's,' + (Math.random() * 1) + 's;z-index:10;';
+    fallScreen.appendChild(m);
+  }
+  var fallSentence = 'Oops. You just fell down the rabbit hole.';
+  var fallTextEl = document.getElementById('fall-text');
+  fallSentence.split(' ').forEach(function (word, i) {
+    var w = document.createElement('span');
+    w.className = 'fw';
+    w.textContent = word;
+    var rot = -20 + Math.random() * 40;
+    var dx = -35 + Math.random() * 70;
+    var fy = 70 + Math.random() * 25;
+    var dur = 4.5 + Math.random() * 2;
+    var delay2 = 0.6 + i * 0.42;
+    w.style.cssText = '--rot:' + rot + 'deg;--dx:' + dx + 'px;--fy:' + fy + 'vh;animation-duration:' + dur + 's;animation-delay:' + delay2 + 's;';
+    fallTextEl.appendChild(w);
+  });
+  setTimeout(function () { window.location.href = folder + '/index.html'; }, 11000);
+}
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+  var val = pw.value.trim().toLowerCase();
+  var folder = MAP[val];
+  if (folder) {
+    if (val === 'howlifefeels') localStorage.setItem('ag-unlocked', 'true');
+    startFall(folder);
+  } else {
+    pw.classList.add('err','shake');
+    msg.textContent = 'incorrect.';
+    msg.classList.add('show');
+    setTimeout(function(){ pw.classList.remove('shake'); }, 300);
+  }
+});
+pw.addEventListener('input', function(){
+  pw.classList.remove('err');
+  msg.classList.remove('show');
+});
+</script>
+<script data-goatcounter="https://annagreyhem.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
