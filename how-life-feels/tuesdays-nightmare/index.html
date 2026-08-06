@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Sentry error monitoring -->
+<script
+  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
+  crossorigin="anonymous"
+></script>
+<script>
+  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
+  Sentry.onLoad(function () {
+    Sentry.init({
+      release: "anna-greyhem-website@1.0.0",
+    });
+  });
+</script>
+
+<!--
+  QR EDITION: tuesdays-nightmare
+  Built on the shared QR base — chrome-less, immersive, quiet by law.
+  Scene: a plain wall switch. Every second time the light goes out,
+  the writing bleeds onto the wall. Turning it back on clears it.
+-->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0a0c" />
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/images/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="icon" href="/assets/images/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+<title>Tuesday's Nightmare — Anna Greyhem</title>
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../assets/css/qr-base.css">
+<script src="../../assets/js/qr-viewport-fix.js"></script>
+<style>
+  /* ---- scene-only styles; palette, grain, foot-scrim and .qr-legal
+     all come from qr-base.css ---- */
+  body {
+    height: 100svh;
+    overflow: hidden;
+    -webkit-user-select: none; user-select: none;
+    cursor: default;
+  }
+
+  :root { --ar: 0.5628; }   /* exact aspect ratio of the room photos (941/1672) */
+
+  /* ---------- STAGE ----------
+     Keeps the photo's exact aspect ratio so a percentage position inside it
+     lands on the same spot of the photo on every screen. On phones it fills
+     the height, anchored left (so the wall switch is never cropped off); on
+     wider screens it is a centred portrait column. */
+  #stage {
+    position: fixed;
+    top: 0;
+    height: 100dvh;
+    width: calc(100dvh * var(--ar));
+    left: 0;
+    overflow: hidden;
+    background: var(--ink);
+  }
+  @media (min-aspect-ratio: 563/1000) {
+    #stage { left: 50%; transform: translateX(-50%); }
+  }
+
+  .layer {
+    position: absolute;
+    inset: 0;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    will-change: opacity;
+  }
+  /* bottom → top : dark room, the blood message, the warm light */
+  #layerDark { background-image: url("https://cdn.annagreyhem.com/how-life-feels/room-dark.jpg"); opacity: 0; transition: opacity 0.4s ease; }
+  #layerMsg  { background-image: url("https://cdn.annagreyhem.com/how-life-feels/room-message.jpg"); opacity: 0; transition: opacity 2.6s linear; filter: brightness(1.22) contrast(1.06); }
+  /* location-independent glow: a blurred copy of the same photo blended with
+     'screen' lifts only the bright parts — i.e. the writing — into a soft
+     bloom, so it reads on dim screens without touching the dark wall. */
+  #layerMsg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("https://cdn.annagreyhem.com/how-life-feels/room-message.jpg");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: blur(7px) brightness(1.75) contrast(1.15);
+    mix-blend-mode: screen;
+    opacity: 0.82;
+    pointer-events: none;
+  }
+  /* High-contrast users (see note) get a noticeably stronger bloom so the
+     writing stays clearly legible even on dim screens. The dark wall itself
+     is untouched — 'screen' blend only lifts the bright pixels. */
+  @media (prefers-contrast: more) {
+    #layerMsg { filter: brightness(1.35) contrast(1.1); }
+    #layerMsg::after { filter: blur(6px) brightness(2.0) contrast(1.2); opacity: 0.95; }
+  }
+  /* QA-only override: ?contrast=more in the URL forces the high-contrast
+     bloom on any device (mirrors the media query above). For testing. */
+  body.force-contrast #layerMsg { filter: brightness(1.35) contrast(1.1); }
+  body.force-contrast #layerMsg::after { filter: blur(6px) brightness(2.0) contrast(1.2); opacity: 0.95;
+  }
+  #layerLit  { background-image: url("https://cdn.annagreyhem.com/how-life-feels/room-lit.jpg"); opacity: 0; transition: opacity 1.6s cubic-bezier(.4,0,.2,1); }
+
+  #vignette {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(125% 95% at 50% 42%, rgba(0,0,0,0) 42%, rgba(2,4,10,0.5) 100%);
+    mix-blend-mode: multiply;
+    z-index: 5;
+  }
+
+  /* ---------- LIGHT SWITCH (sits exactly over the painted one) ---------- */
+  #switch {
+    position: absolute;
+    left: 93.0%;
+    top: 39.6%;
+    width: 38px;
+    height: 49px;
+    transform: translate(-50%,-50%);
+    cursor: pointer;
+    z-index: 8;
+    touch-action: manipulation;
+  }
+  /* a small white wall switch — plate + rocker — so it reads as part of
+     the photographed room */
+  .plate {
+    position: absolute; left: 50%; top: 50%;
+    width: 28px; height: 42px;
+    transform: translate(-50%,-50%);
+    border-radius: 3px;
+    background: linear-gradient(150deg, #e3dbc9 0%, #cdc4ad 60%, #b6ac94 100%);
+    box-shadow: 0 1px 3px rgba(0,0,0,.55), inset 0 1px 1px rgba(255,250,238,.55), inset 0 -1px 2px rgba(40,30,15,.22);
+    border: 1px solid rgba(35,26,12,.30);
+  }
+  .rocker {
+    position: absolute; left: 50%; top: 50%;
+    width: 15px; height: 30px;
+    transform: translate(-50%,-50%);
+    border-radius: 2px;
+    /* OFF: lower half catches a touch of shadow (pressed down) */
+    background: linear-gradient(180deg,#ece3d0 0%,#ddd3bd 46%,#c2b8a0 52%,#b2a88f 100%);
+    box-shadow: inset 0 1px 1px rgba(255,250,238,.6), inset 0 -2px 3px rgba(40,30,15,.26);
+    border: 1px solid rgba(35,26,12,.20);
+    transition: background .18s ease, box-shadow .18s ease;
+  }
+  /* light ON: rocker pressed the other way (top recessed) */
+  #switch.on .rocker {
+    background: linear-gradient(180deg,#b2a88f 0%,#c2b8a0 48%,#ddd3bd 54%,#ece3d0 100%);
+    box-shadow: inset 0 2px 3px rgba(40,30,15,.26), inset 0 -1px 1px rgba(255,250,238,.6);
+  }
+  /* a soft breathing glow + a ring that stays visible the whole time, so the
+     reader always knows the switch can (and should) be tapped repeatedly */
+  .glow {
+    position: absolute; left: 50%; top: 50%;
+    width: 27px; height: 38px;
+    transform: translate(-50%,-50%);
+    border-radius: 4px;
+    background: radial-gradient(closest-side, rgba(235,222,195,.26), rgba(235,222,195,0));
+    filter: blur(3px);
+    animation: glow 3.4s ease-in-out infinite;
+  }
+  .halo {
+    position: absolute; left: 50%; top: 50%;
+    width: 34px; height: 34px;
+    transform: translate(-50%,-50%);
+    border-radius: 50%;
+    border: 1px solid rgba(235,222,195,.34);
+    animation: halo 3s ease-out infinite;
+  }
+  @keyframes glow { 0%,100%{opacity:.25} 50%{opacity:.7} }
+  @keyframes halo {
+    0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}
+    28%{opacity:.5}
+    100%{opacity:0;transform:translate(-50%,-50%) scale(2.2)}
+  }
+
+  @media (prefers-reduced-motion: reduce) { .halo, .glow { animation: none; } }
+
+  /* Legal footer: keep it permanently legible (Impressum / Datenschutz
+     must stay easily recognisable). !important so it survives the
+     preview safety-net re-appending qr-base.css after this block. */
+  .qr-legal { opacity: 0.5 !important; }
+</style>
+</head>
+<body data-screen-label="QR · Tuesday's Nightmare">
+
+<span class="grain" aria-hidden="true"></span>
+
+<div id="stage">
+  <div class="layer" id="layerDark"></div>
+  <div class="layer" id="layerMsg"></div>
+  <div class="layer" id="layerLit"></div>
+  <div id="vignette"></div>
+
+  <!-- the wall light switch -->
+  <div id="switch" aria-label="Light switch" role="button" tabindex="0">
+    <div class="glow"></div>
+    <div class="plate"></div>
+    <div class="rocker"></div>
+    <div class="halo"></div>
+  </div>
+</div>
+
+<nav class="qr-legal" aria-label="Legal">
+  <a class="mark" href="https://annagreyhem.com/">Anna <em>Greyhem</em></a>
+  <span class="sep" aria-hidden="true">·</span>
+  <a href="https://annagreyhem.com/impressum/">Legal Notice</a>
+  <span class="sep" aria-hidden="true">·</span>
+  <a href="https://annagreyhem.com/datenschutz/">Privacy</a>
+</nav>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     AUDIO — only a crisp switch click confirms the tap. No ambient
+     drone/hum: silence carries the dread better and survives phone
+     speakers. No sound is triggered when the writing appears.
+     ========================================================= */
+  var Audio = (function(){
+    var ctx=null, master=null, started=false;
+    function init(){
+      if(started) return;
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return;
+      ctx = new AC();
+      master = ctx.createGain();
+      master.gain.value = 0.9;
+      master.connect(ctx.destination);
+      started = true;
+    }
+    function t(){ return ctx?ctx.currentTime:0; }
+    function warm(on){ /* no ambience — intentionally silent */ }
+
+    var noiseBuf=null;
+    function noise(){
+      if(noiseBuf) return noiseBuf;
+      var len=Math.floor(ctx.sampleRate*0.05);
+      noiseBuf=ctx.createBuffer(1,len,ctx.sampleRate);
+      var d=noiseBuf.getChannelData(0);
+      for(var i=0;i<len;i++){ d[i]=Math.random()*2-1; }
+      return noiseBuf;
+    }
+    /* one mechanical "tick": a filtered noise burst (the plastic snap) plus a
+       tiny resonant body — no musical tone, so it reads as a real switch. */
+    function tick(at, level, cut){
+      var src=ctx.createBufferSource(); src.buffer=noise();
+      var bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=cut; bp.Q.value=1.1;
+      var hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=1200;
+      var g=ctx.createGain();
+      g.gain.setValueAtTime(0.0001,at);
+      g.gain.exponentialRampToValueAtTime(level,at+0.0008);
+      g.gain.exponentialRampToValueAtTime(0.0001,at+0.018);
+      src.connect(bp); bp.connect(hp); hp.connect(g); g.connect(master);
+      src.start(at); src.stop(at+0.05);
+    }
+    function click(){
+      if(!ctx) return; var now=t();
+      /* two-part clack: finger pressing the toggle, then it snapping over */
+      tick(now,       0.32, 2600);
+      tick(now+0.028, 0.5,  3400);
+    }
+    function resume(){ if(ctx && ctx.state==='suspended') ctx.resume(); }
+    return {init:init, warm:warm, click:click, resume:resume};
+  })();
+
+  /* =========================================================
+     SCENE — a plain switch with one secret: every SECOND time you
+     switch the light off, the writing bleeds onto the wall (silently).
+     Switching the light back on clears it; the room is normal again.
+     ========================================================= */
+  /* QA test hook: ?contrast=more forces the high-contrast bloom on any device */
+  if (/[?&]contrast=more\b/.test(location.search)) {
+    document.body.classList.add('force-contrast');
+  }
+
+  /* QA measure hook: ?measure=1 — click/tap anywhere on the stage to read the
+     exact left%/top% for #switch (relative to the room photo). Copy the two
+     numbers straight into the #switch rule. */
+  if (/[?&]measure=1\b/.test(location.search)) {
+    var stageEl = document.getElementById('stage');
+    var readout = document.createElement('div');
+    readout.style.cssText =
+      'position:fixed;left:8px;top:8px;z-index:9999;font:600 14px/1.4 monospace;' +
+      'background:rgba(0,0,0,.8);color:#7CFC7C;padding:8px 10px;border-radius:6px;' +
+      'pointer-events:none;white-space:pre';
+    readout.textContent = 'tap the switch spot…';
+    document.body.appendChild(readout);
+    var dot = document.createElement('div');
+    dot.style.cssText =
+      'position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;' +
+      'background:#7CFC7C;box-shadow:0 0 0 2px rgba(0,0,0,.6);z-index:9998;pointer-events:none;display:none';
+    stageEl.appendChild(dot);
+    stageEl.addEventListener('click', function (e) {
+      var r = stageEl.getBoundingClientRect();
+      var lx = (e.clientX - r.left) / r.width * 100;
+      var ly = (e.clientY - r.top) / r.height * 100;
+      dot.style.left = lx + '%'; dot.style.top = ly + '%'; dot.style.display = 'block';
+      readout.textContent = 'left: ' + lx.toFixed(1) + '%\ntop:  ' + ly.toFixed(1) + '%';
+    });
+  }
+
+  var lit  = document.getElementById('layerLit');
+  var msg  = document.getElementById('layerMsg');
+  var dark = document.getElementById('layerDark');
+  var sw   = document.getElementById('switch');
+
+  var lightOn  = false;   // room starts dark
+  var offCount = 0;       // how many times the light has been switched OFF
+  var lock     = false;   // brief debounce so one tap = one toggle
+
+  // pre-decode the backgrounds so switching never flashes black
+  window.addEventListener('load', function(){
+    ['layerDark','layerMsg','layerLit'].forEach(function(id){
+      var bg = getComputedStyle(document.getElementById(id)).backgroundImage;
+      var m = bg.match(/url\("(.+)"\)/);
+      if(m){ var im=new Image(); im.src=m[1]; if(im.decode){ im.decode().catch(function(){}); } }
+    });
+  });
+
+  function toggle(){
+    if(lock) return;
+    lock = true; setTimeout(function(){ lock=false; }, 360);
+
+    Audio.init();
+    Audio.resume();
+    Audio.click();
+
+    if(!lightOn){
+      /* ---- switch ON : warm, normal room, message cleared ---- */
+      lightOn = true;
+      sw.classList.add('on');
+      dark.style.opacity = '1';   /* reveal the room (stays revealed from now on) */
+      msg.style.transition = 'opacity 0.9s ease';
+      msg.style.opacity = '0';
+      lit.style.transition = 'opacity 0.45s cubic-bezier(.4,0,.2,1)';
+      lit.style.opacity = '1';
+      Audio.warm(true);
+    } else {
+      /* ---- switch OFF ---- */
+      lightOn = false;
+      sw.classList.remove('on');
+      offCount++;
+      lit.style.transition = 'opacity 0.4s ease';
+      lit.style.opacity = '0';
+      Audio.warm(false);
+
+      if(offCount % 2 === 0){
+        /* every second time the light goes out, the writing snaps onto the
+           wall instantly (no fade, no sound) the moment it goes dark */
+        setTimeout(function(){
+          msg.style.transition = 'none';
+          msg.style.opacity = '1';
+        }, 40);
+      }
+    }
+  }
+
+  sw.addEventListener('click', toggle);
+  sw.addEventListener('keydown', function(e){
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }
+  });
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) Audio.resume(); });
+
+  /* ---- legal footer: wake it when a pointer/touch nears the bottom edge ---- */
+  (function(){
+    var legal = document.querySelector('.qr-legal');
+    if(!legal) return;
+    var nearT;
+    function near(){
+      legal.setAttribute('data-near','true');
+      clearTimeout(nearT);
+      nearT = setTimeout(function(){ legal.setAttribute('data-near','false'); }, 2600);
+    }
+    function check(y){ if(y >= window.innerHeight - 120) near(); }
+    window.addEventListener('pointermove', function(e){ check(e.clientY); }, {passive:true});
+    window.addEventListener('touchstart', function(e){
+      if(e.touches && e.touches[0]) check(e.touches[0].clientY);
+    }, {passive:true});
+  })();
+})();
+</script>
+
+<!-- ═══════════ GoatCounter — page views + JS-error events ═══════════ -->
+<script data-goatcounter="https://annagreyhem.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+/* Report any uncaught JS error as a GoatCounter event, grouped under js-error/… */
+(function () {
+  function report(label) {
+    try {
+      var fire = function () {
+        window.goatcounter.count({
+          path:  'js-error' + location.pathname,
+          title: String(label).slice(0, 240),
+          event: true
+        });
+      };
+      if (window.goatcounter && window.goatcounter.count) return fire();
+      var n = 0, t = setInterval(function () {
+        if (window.goatcounter && window.goatcounter.count) { clearInterval(t); fire(); }
+        else if (++n > 30) clearInterval(t);
+      }, 500);
+    } catch (_) {}
+  }
+  window.addEventListener('error', function (e) {
+    report((e.message || 'error') + ' @ ' + (e.filename || '') + ':' + (e.lineno || 0));
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    var r = e.reason;
+    report('promise: ' + ((r && (r.message || r)) || 'unhandledrejection'));
+  });
+})();
+</script>
+
+</body>
+</html>
