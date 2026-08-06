@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Sentry error monitoring -->
+<script
+  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
+  crossorigin="anonymous"
+></script>
+<script>
+  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
+  Sentry.onLoad(function () {
+    Sentry.init({
+      release: "anna-greyhem-website@1.0.0",
+    });
+  });
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#000000">
+<title>Installing Anna 3.0 — Anna Greyhem</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/images/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="icon" href="/assets/images/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<script src="../../assets/js/qr-viewport-fix.js"></script>
+<script>
+/* Preview-only safety net: if deep relative font link is blocked, re-link with token. */
+(function(){
+  function fix(){
+    var t = (location.search.match(/[?&]t=([^&]+)/) || [])[1];
+    if (!t) return;
+    var base = location.href.split('/how-life-feels/')[0] + '/';
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = base + 'assets/fonts/fonts.css?t=' + t; document.head.appendChild(l);
+  }
+  if (document.readyState !== 'loading') fix();
+  else document.addEventListener('DOMContentLoaded', fix);
+})();
+</script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body {
+  width:100%; min-height:100%;
+  background:#000;
+  color:#00cc00;
+  font-family:'Courier New', Courier, monospace;
+  font-size:13px;
+  overflow-x:hidden;
+  cursor:default;
+}
+
+/* ── INSTALL WIZARD ─────────────────────────────── */
+#wizard {
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:#000; z-index:200;
+  padding:20px;
+  overflow-y:auto;
+}
+.window {
+  background:#0d0d0d;
+  border:1px solid #444;
+  width:clamp(300px,52vw,520px);
+  box-shadow:6px 6px 0 rgba(255,255,255,0.04);
+}
+.win-bar {
+  background:#1a1a1a;
+  border-bottom:1px solid #444;
+  padding:5px 10px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.win-bar-title {
+  font-size:12px; color:#aaa; letter-spacing:0.05em;
+}
+.win-bar-btns { display:flex; gap:6px; }
+.win-dot {
+  width:11px; height:11px; border-radius:50%;
+  border:1px solid #555;
+  background:#222;
+}
+.win-body { padding:24px 22px 18px; }
+.win-body h2 {
+  font-size:15px; font-weight:bold; color:#fff;
+  margin-bottom:4px; letter-spacing:0.05em;
+}
+.win-body .version-sub {
+  font-size:11px; color:#888; margin-bottom:18px;
+}
+.win-body p { color:#bbb; font-size:12px; line-height:1.9; margin-bottom:14px; }
+
+/* irreversible-action note — restrained, one line */
+.warn-note {
+  color:#888; font-size:11px; line-height:1.75;
+  margin-bottom:18px;
+}
+.warn-note .hl { color:#cc7777; }
+
+.release-box {
+  background:#050505;
+  border:1px solid #222;
+  padding:12px 14px;
+  margin-bottom:18px;
+  font-size:11px;
+  color:#777;
+  line-height:1.9;
+}
+.release-box .rel-title { color:#aaa; font-weight:bold; margin-bottom:6px; font-size:12px; }
+.release-box .rel-item::before { content:"▸  "; color:#444; }
+.release-box .rel-size { color:#444; margin-top:8px; font-size:11px; }
+.win-footer {
+  border-top:1px solid #222;
+  padding:10px 14px;
+  display:flex; justify-content:flex-end; gap:8px;
+}
+.btn {
+  font-family:'Courier New', monospace;
+  font-size:12px;
+  padding:5px 18px;
+  border:1px solid #555;
+  background:#111;
+  color:#aaa;
+  cursor:pointer;
+  letter-spacing:0.05em;
+}
+.btn:hover { border-color:#aaa; color:#fff; background:#1a1a1a; }
+.btn.primary { border-color:#007700; color:#00cc00; }
+.btn.primary:hover { background:#002200; border-color:#00cc00; color:#00ff00; }
+
+/* ── TERMINAL ───────────────────────────────────── */
+#terminal {
+  display:none;
+  padding:20px clamp(16px,5vw,40px) 120px;
+  max-width:760px;
+  margin:0 auto;
+}
+#term-topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:14px;
+  padding-bottom:8px;
+  border-bottom:1px solid #111;
+}
+#term-topbar-title { font-size:11px; color:#444; letter-spacing:0.1em; }
+#term-topbar-dots { display:flex; gap:6px; }
+#term-topbar-dots span {
+  width:10px; height:10px; border-radius:50%; background:#1a1a1a; border:1px solid #333;
+}
+
+#code-lines { line-height:1.75; }
+.line { display:block; white-space:pre-wrap; word-break:normal; overflow-wrap:break-word; }
+.line.normal { color:#00cc00; }
+.line.dim    { color:#009900; }
+.line.error  { color:#ff4444; font-weight:bold; }
+.line.warn   { color:#ffaa00; }
+.line.info   { color:#cccccc; }
+.line.rabbit { color:#00aa00; }
+.line.blank  { color:transparent; }
+
+#progress-wrap { margin:16px 0 8px; display:none; }
+#progress-label { color:#007700; font-size:12px; margin-bottom:5px; }
+#progress-track {
+  background:#050505;
+  border:1px solid #1a1a1a;
+  height:16px; width:100%; position:relative; overflow:hidden;
+}
+#progress-fill { background:#005500; height:100%; width:0%; transition:width 0.06s linear; }
+#progress-text {
+  position:absolute; top:0; left:0; right:0; bottom:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; color:#00cc00; letter-spacing:0.1em;
+}
+#progress-pct { color:#007700; font-size:11px; margin-top:4px; }
+
+/* ── OVERLAY ────────────────────────────────────── */
+#overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.7);
+  z-index:99; display:none;
+}
+
+/* ── POPUPS ─────────────────────────────────────── */
+.popup {
+  position:fixed;
+  background:#0d0d0d;
+  border:1px solid #444;
+  width:clamp(260px,38vw,360px);
+  z-index:100;
+  display:none;
+  box-shadow:5px 5px 0 rgba(0,0,0,0.5);
+}
+.popup .win-bar { background:#1a1a1a; border-bottom:1px solid #333; }
+.popup .win-bar-title { color:#ff4444; font-size:12px; }
+.popup .win-body { padding:16px 16px 12px; }
+.popup .popup-msg { color:#ff6666; font-size:12px; line-height:1.85; margin-bottom:14px; }
+.popup .popup-msg .lbl { color:#ffaaaa; }
+.popup .win-footer { border-top:1px solid #1a1a1a; padding:8px 12px; justify-content:flex-end; }
+
+/* ── SUCCESS ────────────────────────────────────── */
+#success-overlay {
+  position:fixed; inset:0;
+  background:#000;
+  display:none;
+  align-items:center; justify-content:center;
+  z-index:300;
+  padding:20px;
+}
+#success-win {
+  background:#0d0d0d;
+  border:1px solid #007700;
+  width:clamp(280px,42vw,400px);
+  box-shadow:0 0 40px rgba(0,100,0,0.2);
+}
+#success-win .win-bar { background:#001a00; border-bottom:1px solid #007700; }
+#success-win .win-bar-title { color:#00cc00; }
+#success-win .win-body { padding:28px 24px 24px; text-align:center; }
+#success-win .s-title { font-size:22px; color:#00ff00; margin-bottom:10px; letter-spacing:0.1em; font-weight:bold; }
+#success-win .s-sub { font-size:13px; color:#009900; letter-spacing:0.12em; }
+#success-win .s-blink { animation:blink 1.2s step-end infinite; }
+/* ── LEGAL FOOTER (shared QR pattern, self-contained for this page) ── */
+.qr-legal {
+  position:fixed; left:50%; bottom:calc(14px + env(safe-area-inset-bottom) + var(--qr-toolbar-gap, 0px));
+  transform:translateX(-50%);
+  z-index:400;
+  display:inline-flex; align-items:center; gap:12px; white-space:nowrap;
+  opacity:0.5; transition:opacity 0.7s ease;
+}
+.qr-legal:hover, .qr-legal:focus-within, .qr-legal[data-near="true"] { opacity:1; }
+.qr-legal .mark {
+  font-family:'Cormorant Garamond', 'EB Garamond', Garamond, serif; font-weight:300;
+  font-size:13px; letter-spacing:0.02em; color:#c9c4b8; text-decoration:none;
+}
+.qr-legal .mark em { font-style:italic; }
+.qr-legal a:not(.mark) {
+  font-family:'JetBrains Mono', ui-monospace, Menlo, monospace; font-size:10px; letter-spacing:0.14em;
+  text-transform:uppercase; color:#8a8478; text-decoration:none;
+  min-height:36px; display:inline-flex; align-items:center; transition:color 0.4s ease;
+}
+.qr-legal a:not(.mark):hover { color:#eeeae0; }
+.qr-legal .sep { color:#2a2823; font-size:10px; }
+</style>
+</head>
+<body>
+
+<div id="overlay"></div>
+
+<!-- ── INSTALL WIZARD ── -->
+<div id="wizard">
+  <div class="window">
+    <div class="win-bar">
+      <span class="win-bar-title">Setup Wizard</span>
+      <div class="win-bar-btns">
+        <div class="win-dot"></div>
+        <div class="win-dot"></div>
+        <div class="win-dot"></div>
+      </div>
+    </div>
+    <div class="win-body">
+      <h2 style="margin-bottom:16px;">Install Anna 3.0</h2>
+      <div style="color:#aaa;font-size:12px;line-height:2.2;margin-bottom:18px;">
+        <div>Version 3.0</div>
+        <div>13.3 MB</div>
+      </div>
+
+      <p class="warn-note">By clicking Install you agree to replace anna_2.9 with this version. <span class="hl">This permanently erases anna_2.9 and cannot be undone</span> — no backup, no rollback.</p>
+
+      <div style="margin-bottom:0px;">
+        <span id="notes-toggle" onclick="toggleNotes()" style="color:#00aa00;font-size:11px;cursor:pointer;text-decoration:underline;">Click here to read version 3.0 release notes.</span>
+      </div>
+      <div id="release-notes" style="display:none;margin-top:14px;border-top:1px solid #1a1a1a;padding-top:12px;">
+        <div style="color:#aaa;font-size:11px;line-height:2;">
+          <div style="color:#888;margin-bottom:6px;">— It's not perfect, but it's patched!</div>
+          <div>▸ Turbo mode in creativity fixed</div>
+          <div>▸ More time with friends added</div>
+          <div>▸ Fashion sense enhanced by vintage shopping</div>
+          <div>▸ A year of amazing parties in 4 cities enabled</div>
+          <div>▸ Includes being a maid of honor</div>
+        </div>
+      </div>
+    </div>
+    <div class="win-footer">
+      <button class="btn" onclick="cancelInstall()">Cancel</button>
+      <button class="btn primary" onclick="startInstall()">Install ▸</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TERMINAL ── -->
+<div id="terminal">
+  <div id="term-topbar">
+    <span id="term-topbar-title">anna_setup.exe — [install log]</span>
+    <div id="term-topbar-dots">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+  <div id="code-lines"></div>
+  <div id="progress-wrap">
+    <div id="progress-label">installing anna_3.0...</div>
+    <div id="progress-track">
+      <div id="progress-fill"></div>
+      <div id="progress-text"><span id="progress-pct">0%</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── WARNING POPUP ── -->
+<div class="popup" id="popup-warn" style="top:28%;left:50%;transform:translateX(-50%);">
+  <div class="win-bar">
+    <span class="win-bar-title">⚠ Installation Error</span>
+    <div class="win-bar-btns"><div class="win-dot"></div></div>
+  </div>
+  <div class="win-body">
+    <div class="popup-msg">
+      <span class="lbl">ERROR CODE:</span> 0x80070005<br>
+      <span class="lbl">STATUS:</span> Installation failed.<br>
+      <span class="lbl">CAUSE:</span> Multiple dependency conflicts.<br><br>
+      Retry installation?
+    </div>
+  </div>
+  <div class="win-footer">
+    <button class="btn" onclick="closeWarn()">Dismiss</button>
+    <button class="btn primary" id="retry-btn" onclick="installAgain()">install again</button>
+  </div>
+</div>
+
+<!-- ── ERROR STACK ── -->
+<div class="popup" id="err0" style="top:15%;left:18%;">
+  <div class="win-bar"><span class="win-bar-title">⚠ Fatal Error</span><div class="win-bar-btns"><div class="win-dot"></div></div></div>
+  <div class="win-body"><div class="popup-msg"><span class="lbl">CRITICAL:</span> identity.dll not found<br>Self could not be located.</div></div>
+  <div class="win-footer"><button class="btn" onclick="closeErr(0)">✕ Close</button></div>
+</div>
+<div class="popup" id="err1" style="top:22%;left:24%;">
+  <div class="win-bar"><span class="win-bar-title">⚠ Fatal Error</span><div class="win-bar-btns"><div class="win-dot"></div></div></div>
+  <div class="win-body"><div class="popup-msg"><span class="lbl">SyntaxERROR:</span> 'sanity' unknown<br>Module does not exist.</div></div>
+  <div class="win-footer"><button class="btn" onclick="closeErr(1)">✕ Close</button></div>
+</div>
+<div class="popup" id="err2" style="top:29%;left:30%;">
+  <div class="win-bar"><span class="win-bar-title">⚠ Fatal Error</span><div class="win-bar-btns"><div class="win-dot"></div></div></div>
+  <div class="win-body"><div class="popup-msg"><span class="lbl">CONFLICT:</span> freedom.exe still running<br>Cannot overwrite active process.</div></div>
+  <div class="win-footer"><button class="btn" onclick="closeErr(2)">✕ Close</button></div>
+</div>
+<div class="popup" id="err3" style="top:36%;left:22%;">
+  <div class="win-bar"><span class="win-bar-title">⚠ Fatal Error</span><div class="win-bar-btns"><div class="win-dot"></div></div></div>
+  <div class="win-body"><div class="popup-msg"><span class="lbl">WARNING:</span> old_anna.bak detected<br>Backup conflicts with new version.</div></div>
+  <div class="win-footer"><button class="btn" onclick="closeErr(3)">✕ Close</button></div>
+</div>
+<div class="popup" id="err4" style="top:43%;left:28%;">
+  <div class="win-bar"><span class="win-bar-title">⚠ Fatal Error</span><div class="win-bar-btns"><div class="win-dot"></div></div></div>
+  <div class="win-body"><div class="popup-msg"><span class="lbl">TERMINATED:</span> installation_fear.sys<br>Process terminated by user.</div></div>
+  <div class="win-footer"><button class="btn" onclick="closeErr(4)">✕ Close</button></div>
+</div>
+
+<!-- ── SUCCESS ── -->
+<div id="success-overlay">
+  <div id="success-win">
+    <div class="win-bar">
+      <span class="win-bar-title">anna_3.0_setup.exe</span>
+      <div class="win-bar-btns"><div class="win-dot"></div></div>
+    </div>
+    <div class="win-body">
+      <div class="s-title">Success.</div>
+      <div class="s-sub">Welcome to Anna 3.0<span class="s-blink">_</span></div>
+      <div style="font-size:11px;color:#007700;letter-spacing:0.1em;margin-top:14px;">anna_2.9 removed.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+var attempt = 0;
+var errsClosed = 0;
+var cancelCount = 0;
+var cl = document.getElementById('code-lines');
+var pw = document.getElementById('progress-wrap');
+var pf = document.getElementById('progress-fill');
+var pp = document.getElementById('progress-pct');
+var ov = document.getElementById('overlay');
+
+function toggleNotes() {
+  var notes = document.getElementById('release-notes');
+  var link = document.getElementById('notes-toggle');
+  if (notes.style.display === 'none') {
+    notes.style.display = 'block';
+    link.textContent = 'Hide version 3.0 release notes.';
+  } else {
+    notes.style.display = 'none';
+    link.textContent = 'Click here to read version 3.0 release notes.';
+  }
+}
+
+function cancelInstall() {
+  cancelCount++;
+  var msg = cancelCount === 1
+    ? 'Are you sure you want to cancel? Anna 3.0 is ready to install.'
+    : 'Installation is required to continue.';
+  ov.style.display = 'block';
+  var p = document.createElement('div');
+  p.className = 'popup';
+  p.style.cssText = 'top:38%;left:50%;transform:translateX(-50%);display:block;';
+  p.innerHTML = '<div class="win-bar"><span class="win-bar-title">⚠ Setup Wizard</span><div class="win-bar-btns"><div class="win-dot"></div></div></div>'
+    + '<div class="win-body"><div class="popup-msg" style="color:#aaa;">' + msg + '</div></div>'
+    + '<div class="win-footer"><button class="btn" onclick="this.closest(\'.popup\').remove();document.getElementById(\'overlay\').style.display=\'none\';">Go back</button>'
+    + '<button class="btn primary" onclick="this.closest(\'.popup\').remove();document.getElementById(\'overlay\').style.display=\'none\';startInstall();">Install ▸</button></div>';
+  document.body.appendChild(p);
+}
+
+function startInstall() {
+  document.getElementById('wizard').style.display = 'none';
+  document.getElementById('terminal').style.display = 'block';
+  runPhase1();
+}
+
+function addLines(arr, startDelay, interval) {
+  return new Promise(function(res) {
+    arr.forEach(function(l, i) {
+      var last = i === arr.length - 1;
+      setTimeout(function() {
+        var el = document.createElement('span');
+        el.className = 'line ' + l[0];
+        el.textContent = l[1];
+        cl.appendChild(el);
+        window.scrollTo(0, document.body.scrollHeight);
+        if (last) res();
+      }, startDelay + i * interval);
+    });
+  });
+}
+
+function animateProgress(from, to, duration) {
+  pw.style.display = 'block';
+  return new Promise(function(res) {
+    var start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / duration, 1);
+      var val = from + (to - from) * p;
+      pf.style.width = val.toFixed(1) + '%';
+      pp.textContent = Math.floor(val) + '%';
+      if (p < 1) requestAnimationFrame(step);
+      else res();
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+function resetProgress() {
+  pw.style.display = 'none';
+  pf.style.width = '0%';
+  pp.textContent = '0%';
+}
+
+function showPopup(id) {
+  ov.style.display = 'block';
+  document.getElementById(id).style.display = 'block';
+}
+
+function hidePopup(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+async function runPhase1() {
+  await addLines([
+    ['dim',   'C:\\Users\\anna> anna_3.0_setup.exe /install'],
+    ['dim',   ''],
+    ['dim',   'Initializing setup environment...'],
+    ['normal','Checking system requirements...'],
+    ['info',  '  CPU .................. OK'],
+    ['info',  '  Memory ............... OK'],
+    ['info',  '  HEART ................ detected'],
+    ['info',  '  Disk space ........... 13.3 MB required'],
+    ['normal','Removing previous version...'],
+    ['warn',  '  anna_2.9 will be permanently erased — no backup.'],
+    ['dim',   '  Deleting anna_2.9\\... this cannot be undone.'],
+    ['normal','Loading package manifest...'],
+    ['dim',   '  [fashion_sense.dll] ............ queued'],
+    ['dim',   '  [creativity_turbo.dll] ......... queued'],
+    ['dim',   '  [friends_module.dll] ........... queued'],
+    ['dim',   '  [party_engine_4city.dll] ....... queued'],
+    ['dim',   '  [maid_of_honor.dll] ............ queued'],
+    ['normal','Verifying checksums...'],
+    ['info',  '  SHA256: a3f9b2c1d4e8... OK'],
+    ['normal','Extracting files...'],
+  ], 0, 110);
+
+  await animateProgress(0, 34, 2400);
+
+  await addLines([
+    ['error', ''],
+    ['error', 'ERROR 0x80070005: Access denied'],
+    ['error', 'ERROR: cannot resolve import "the_old_me"'],
+    ['error', 'CONFLICT: goodbye_to_freedom.sys — file locked'],
+    ['error', 'FAILED: installation stopped at 34%'],
+  ], 200, 160);
+
+  setTimeout(function() {
+    resetProgress();
+    setTimeout(function() { showPopup('popup-warn'); }, 400);
+  }, 800);
+}
+
+function closeWarn() {
+  hidePopup('popup-warn');
+  ov.style.display = 'none';
+  setTimeout(function() {
+    showPopup('popup-warn');
+  }, 1200);
+}
+
+function installAgain() {
+  attempt++;
+  hidePopup('popup-warn');
+  ov.style.display = 'none';
+  if (attempt === 1) runPhase2();
+  else if (attempt === 2) finalInstall();
+}
+
+async function runPhase2() {
+  await addLines([
+    ['dim',   ''],
+    ['dim',   'C:\\Users\\anna> anna_3.0_setup.exe /retry'],
+    ['dim',   ''],
+    ['normal','Retrying installation...'],
+    ['dim',   '  Clearing temp cache... done'],
+    ['dim',   '  Flushing conflict log... done'],
+    ['normal','Re-extracting packages...'],
+    ['dim',   '  [fashion_sense.dll] ............ ok'],
+    ['dim',   '  [creativity_turbo.dll] ......... ok'],
+    ['dim',   '  [friends_module.dll] ........... ok'],
+    ['normal','Writing to disk...'],
+    ['normal','Installing personality patches...'],
+    ['normal','Compiling memories_2024.pkg...'],
+  ], 0, 120);
+
+  await animateProgress(0, 61, 2200);
+
+  setTimeout(function() {
+    resetProgress();
+    ov.style.display = 'block';
+    ['err0','err1','err2','err3','err4'].forEach(function(id, i) {
+      setTimeout(function() {
+        document.getElementById(id).style.display = 'block';
+      }, i * 300);
+    });
+  }, 400);
+}
+
+function closeErr(n) {
+  hidePopup('err' + n);
+  errsClosed++;
+  if (errsClosed === 5) {
+    ov.style.display = 'none';
+    setTimeout(function() {
+      var footer = document.querySelector('#popup-warn .win-footer');
+      footer.innerHTML = '<button class="btn" onclick="closeWarn()">Dismiss</button>'
+        + '<button class="btn primary" id="retry-btn" onclick="installAgain()">install again</button>';
+      showPopup('popup-warn');
+    }, 500);
+  }
+}
+
+async function finalInstall() {
+  await addLines([
+    ['dim',   ''],
+    ['dim',   'C:\\Users\\anna> anna_3.0_setup.exe /force'],
+    ['dim',   ''],
+    ['normal','Forcing installation...'],
+    ['dim',   ''],
+    ['rabbit','             (\\(\\'],
+    ['rabbit','             ( -.-)'],
+    ['rabbit','             o_(")(")'],
+    ['rabbit',''],
+    ['rabbit','   installing anna_3.0...'],
+    ['rabbit','   please do not turn off your device.'],
+    ['rabbit',''],
+    ['normal','Resuming from checkpoint 61%...'],
+    ['dim',   '  [social_calendar.dll] .......... ok'],
+    ['dim',   '  [vintage_wardrobe.dll] ......... ok'],
+    ['dim',   '  [best_friend_mode.dll] ......... ok'],
+    ['dim',   '  [paris_chapter.pkg] ............ ok'],
+    ['warn',  '  SyntaxERROR: \'sanity\' unknown — skipping...'],
+    ['dim',   '  [party_engine_4city.dll] ....... ok'],
+    ['dim',   '  [maid_of_honor.dll] ............ ok'],
+    ['normal','Registering components...'],
+    ['normal','Finalizing installation...'],
+  ], 0, 130);
+
+  await animateProgress(61, 100, 2800);
+
+  await addLines([
+    ['normal',''],
+    ['normal','Removing anna_2.9...'],
+    ['dim',   '  version_that_never_existed.iso ....... deleted'],
+    ['normal',''],
+    ['dim',   '  Keeping:'],
+    ['info',  '  laugh_until_4am.mem'],
+    ['rabbit','    accepted.'],
+    ['info',  '  friends_in_berlin.mem'],
+    ['rabbit','    accepted.'],
+    ['info',  '  paris_at_night.mem'],
+    ['rabbit','    accepted.'],
+    ['normal',''],
+    ['normal','anna_3.0 successfully installed.'],
+    ['dim',   'anna_2.9 removed. No backup retained.'],
+    ['dim',   'Exit code: 0'],
+  ], 200, 150);
+
+  setTimeout(function() {
+    var s = document.getElementById('success-overlay');
+    s.style.display = 'flex';
+  }, 1000);
+}
+
+/* LEGAL footer — brighten near the bottom edge (matches other QR pages) */
+(function(){
+  var legal = document.querySelector('.qr-legal');
+  if(!legal) return;
+  var nearT;
+  function near(){
+    legal.setAttribute('data-near','true');
+    clearTimeout(nearT);
+    nearT = setTimeout(function(){ legal.setAttribute('data-near','false'); }, 2600);
+  }
+  function check(y){ if(y >= window.innerHeight - 120) near(); }
+  window.addEventListener('pointermove', function(e){ check(e.clientY); }, {passive:true});
+  window.addEventListener('touchstart', function(e){
+    if(e.touches && e.touches[0]) check(e.touches[0].clientY);
+  }, {passive:true});
+})();
+</script>
+
+<nav class="qr-legal" aria-label="Legal">
+  <a class="mark" href="https://annagreyhem.com/">Anna <em>Greyhem</em></a>
+  <span class="sep" aria-hidden="true">·</span>
+  <a href="https://annagreyhem.com/impressum/">Legal Notice</a>
+  <span class="sep" aria-hidden="true">·</span>
+  <a href="https://annagreyhem.com/datenschutz/">Privacy</a>
+</nav>
+
+<!-- ═══════════ GoatCounter — page views + JS-error events ═══════════ -->
+<script data-goatcounter="https://annagreyhem.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+/* Report any uncaught JS error as a GoatCounter event, grouped under js-error/… */
+(function () {
+  function report(label) {
+    try {
+      var fire = function () {
+        window.goatcounter.count({
+          path:  'js-error' + location.pathname,
+          title: String(label).slice(0, 240),
+          event: true
+        });
+      };
+      if (window.goatcounter && window.goatcounter.count) return fire();
+      var n = 0, t = setInterval(function () {
+        if (window.goatcounter && window.goatcounter.count) { clearInterval(t); fire(); }
+        else if (++n > 30) clearInterval(t);
+      }, 500);
+    } catch (_) {}
+  }
+  window.addEventListener('error', function (e) {
+    report((e.message || 'error') + ' @ ' + (e.filename || '') + ':' + (e.lineno || 0));
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    var r = e.reason;
+    report('promise: ' + ((r && (r.message || r)) || 'unhandledrejection'));
+  });
+})();
+</script>
+
+</body>
+</html>
