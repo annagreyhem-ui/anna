@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Sentry error monitoring -->
+<script
+  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
+  crossorigin="anonymous"
+></script>
+<script>
+  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
+  Sentry.onLoad(function () {
+    Sentry.init({
+      release: "anna-greyhem-website@1.0.0",
+    });
+  });
+</script>
+
+<!--
+  QR EDITION: nobody
+  Built on the shared QR base — chrome-less, immersive, quiet by law.
+  Scene: one confession, delivered a line at a time. Tap to move forward.
+  Twice the way forward closes: you have to press and hold in the dark
+  until it lets you through. The last line grows the longer you stay.
+-->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0a0c" />
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/images/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="icon" href="/assets/images/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+<title>Nobody — Anna Greyhem</title>
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../assets/css/qr-base.css">
+<script src="../../assets/js/qr-viewport-fix.js"></script>
+<script>
+/* Preview-only safety net: some preview servers don't tokenise relative asset
+   links, blocking the shared stylesheets. If the design tokens are missing,
+   re-link them with the current auth token. In production this is a no-op. */
+(function(){
+  function fix(){
+    if (getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()) return;
+    var t = (location.search.match(/[?&]t=([^&]+)/) || [])[1];
+    if (!t) return;
+    var base = location.href.split('/how-life-feels/')[0] + '/';
+    ['assets/fonts/fonts.css','assets/css/qr-base.css'].forEach(function(p){
+      var l = document.createElement('link'); l.rel = 'stylesheet';
+      l.href = base + p + '?t=' + t; document.head.appendChild(l);
+    });
+  }
+  if (document.readyState !== 'loading') fix();
+  else document.addEventListener('DOMContentLoaded', fix);
+})();
+</script>
+<style>
+  html, body {
+    height: 100svh;
+    overflow: hidden;
+    -webkit-user-select: none; user-select: none;
+    cursor: default;
+  }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ---------- LINE ---------- */
+  .stage {
+    width: min(40rem, 88vw);
+    min-height: 44svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem 1rem;
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .line {
+    font-family: var(--read);
+    font-weight: 400;
+    font-size: var(--read-immersive);
+    line-height: 1.78;
+    letter-spacing: 0.01em;
+    color: var(--bone);
+    max-width: 26ch;
+    text-wrap: balance;
+    opacity: 0;
+    transform: translateY(9px);
+    transition: opacity 0.7s var(--ease), transform 0.7s var(--ease), font-size 0.24s ease;
+    will-change: opacity, transform;
+  }
+  .line.in { opacity: 1; transform: none; }
+  .line em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.12em;
+    color: #f6f2e8;
+  }
+
+  /* ---------- HOLD ---------- */
+  /* faint containing ring where the growth will finish */
+  .hold-target {
+    position: fixed;
+    left: 50%; top: 50%;
+    width: min(78vw, 78vh);
+    height: min(78vw, 78vh);
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(238, 234, 224, 0.12);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s var(--ease);
+    z-index: 1;
+  }
+  .hold-target.on { opacity: 1; }
+  /* the growing circle you fill while holding — carries a cherry breath */
+  .hold-circle {
+    position: fixed;
+    left: 50%; top: 50%;
+    width: 34px; height: 34px;
+    transform: translate(-50%, -50%);
+    border: 1.4px solid var(--cherry-3);
+    border-radius: 50%;
+    box-shadow: 0 0 18px rgba(195, 49, 73, 0.28), inset 0 0 12px rgba(195, 49, 73, 0.14);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease;
+    z-index: 3;
+  }
+  .hold-circle.on { opacity: 1; }
+
+  /* the invisible interaction planes */
+  .plane {
+    position: fixed;
+    inset: 0;
+    background: transparent;
+    border: 0; padding: 0; margin: 0;
+    appearance: none; -webkit-appearance: none;
+    z-index: 4;
+  }
+  .plane.hidden { display: none; }
+  #holdPlane { display: none; }
+  #holdPlane.on { display: block; }
+
+  /* the tap / hold prompt uses the base .cue as-is (position, opacity, colour
+     all inherited from qr-base.css — identical to the other QR editions) */
+  @media (prefers-reduced-motion: reduce) {
+    .line { transition: opacity 0.3s ease; transform: none; }
+  }
+
+  /* Legal footer: keep it permanently legible on this all-dark scene.
+     !important so it survives the preview safety-net re-appending qr-base.css. */
+  .qr-legal { opacity: 0.5 !important; }
+</style>
+</head>
+<body data-screen-label="QR · Nobody">
+
+<span class="grain" aria-hidden="true"></span>
+
+<div class="stage">
+  <div class="line" id="line"></div>
+</div>
+
+<div class="hold-target" id="holdTarget" aria-hidden="true"></div>
+<div class="hold-circle" id="holdCircle" aria-hidden="true"></div>
+<div class="cue" id="cue"></div>
+
+<button class="plane" id="tapPlane" aria-label="Continue"></button>
+<button class="plane" id="holdPlane" aria-label="Press and hold"></button>
+
+<nav class="qr-legal" aria-label="Legal">
+  <a class="mark" href="https://annagreyhem.com/">Anna <em>Greyhem</em></a>
+  <span class="sep" aria-hidden="true">·</span>
+  <a href="https://annagreyhem.com/impressum/">Legal Notice</a>
+  <span class="sep" aria-hidden="true">·</span>
+  <a href="https://annagreyhem.com/datenschutz/">Privacy</a>
+</nav>
+
+<script>
+(function () {
+  "use strict";
+
+  var HOLD_MS = 2200;
+
+  /* '__HOLD__' gates the way forward; the last entry is HTML (emphasis). */
+  var flow = [
+    'She was different',
+    'colder.',
+    'They said things',
+    "I didn't listen.",
+    'I followed her',
+    'into the dark.',
+
+    'She asked me to come.',
+    'I knew something was wrong.',
+    'I went anyway.',
+    'I think I saw it.',
+    'I could have left.',
+    "I didn't.",
+
+    '__HOLD__',
+
+    "It's dark.",
+    "I can't see.",
+    'I feel something on my skin.',
+    'Ants on my arms.',
+    'Butterflies in my stomach.',
+    "I don't move.",
+    "I can't move.",
+
+    '__HOLD__',
+
+    "I'm still here.",
+    'Why am I still here?',
+    { html: 'Why are <em>you</em> still here?' }
+  ];
+
+  var lineEl   = document.getElementById('line');
+  var cueEl    = document.getElementById('cue');
+  var tapPlane = document.getElementById('tapPlane');
+  var holdPlane= document.getElementById('holdPlane');
+  var circle   = document.getElementById('holdCircle');
+  var target   = document.getElementById('holdTarget');
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var i = 0;
+  var raf = null;
+  var holdStart = 0;
+  var growFinal = false;   // last line reached — taps can enlarge it
+  var finalMaxed = false;
+  var finalSize = 0;       // tracked font-size (px) of the final line
+
+  function isHold(v) { return v === '__HOLD__'; }
+  function isFinal() { return i === flow.length - 1; }
+
+  /* ---- shared hint-cue behaviour (inlined so it loads reliably in preview) ----
+     .show(t) show a tap-hint now; hides on any interaction, reappears only
+              after IDLE_MS of nothing happening. .idle(t) arms that idle
+              re-show without showing now. .hold(t) is a permanent hint
+              ("hold" occurs rarely, so it stays visible). .off() hides it.
+     The pulse animation lives centrally in qr-base.css (.cue.on). */
+  var cue = (function (el, idleMs) {
+    var timer = null, mode = 'off', text = '';
+    function paint(on) { el.classList.toggle('on', on); }
+    function clear() { if (timer) { clearTimeout(timer); timer = null; } }
+    function arm() { clear(); timer = setTimeout(function () { if (mode === 'tap') { el.textContent = text; paint(true); } }, idleMs); }
+    var api = {
+      show: function (t) { text = t; mode = 'tap'; el.textContent = t; paint(true); arm(); },
+      idle: function (t) { text = t; mode = 'tap'; paint(false); arm(); },
+      hold: function (t) { text = t; mode = 'hold'; el.textContent = t; paint(true); clear(); },
+      off:  function () { mode = 'off'; text = ''; paint(false); clear(); },
+      poke: function () { if (mode === 'tap') { paint(false); arm(); } }
+    };
+    ['pointerdown', 'keydown'].forEach(function (ev) { document.addEventListener(ev, api.poke, { passive: true }); });
+    return api;
+  })(cueEl, 7000);
+
+  function paint(item) {
+    lineEl.classList.remove('in');
+    var delay = reduce ? 0 : 60;
+    setTimeout(function () {
+      if (item && item.html) lineEl.innerHTML = item.html;
+      else lineEl.textContent = item;
+      lineEl.classList.add('in');
+    }, delay);
+  }
+
+  /* fade the current line to black, then run cb (used before a new section) */
+  function blankThen(cb, ms) {
+    lineEl.classList.remove('in');
+    setTimeout(cb, reduce ? 0 : ms);
+  }
+
+  function showHoldVisuals(on) {
+    circle.classList.toggle('on', on);
+    target.classList.toggle('on', on);
+    if (!on) { circle.style.width = '34px'; circle.style.height = '34px'; }
+  }
+
+  function enterHold() {
+    tapPlane.classList.add('hidden');
+    holdPlane.classList.add('on');
+    cue.hold('press and hold');
+  }
+
+  function leaveHold() {
+    holdPlane.classList.remove('on');
+    tapPlane.classList.remove('hidden');
+    showHoldVisuals(false);
+    cue.off();
+  }
+
+  function advance() {
+    var item = flow[i];
+    if (item === undefined) return;
+
+    if (isHold(item)) { enterHold(); return; }
+
+    // a breath of black before each new section
+    if (item === "It's dark." || item === "I'm still here.") {
+      var line = item;
+      i += 1;
+      blankThen(function () { paint(line); }, item === "It's dark." ? 850 : 950);
+      settleCue();
+      cue.idle('tap');
+      return;
+    }
+
+    paint(item);
+    i += 1;
+
+    if (isFinalOf(item)) {
+      growFinal = true;
+      finalMaxed = false;
+      finalSize = parseFloat(getComputedStyle(lineEl).fontSize);
+      cue.off();
+    } else if (!cueShown) {
+      // First line: show the tap prompt right away so people know what to do.
+      cueShown = true;
+      cue.show('tap');
+    } else {
+      cue.idle('tap');
+    }
+  }
+
+  // did we just paint the very last entry?
+  function isFinalOf(item) {
+    return item && item.html && item === flow[flow.length - 1];
+  }
+
+  var cueShown = false;
+  function settleCue() {
+    if (cueShown) return;
+    cueShown = true;
+    setTimeout(function () { if (i < 2) cue.show('tap'); }, 1400);
+  }
+
+  /* ---------- HOLD mechanics ---------- */
+  function beginHold(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    showHoldVisuals(true);
+    cue.hold('keep holding');
+    holdStart = performance.now();
+    cancelAnimationFrame(raf);
+
+    var min = 34;
+    var max = Math.min(window.innerWidth, window.innerHeight) * 0.78;
+
+    function tick(now) {
+      var p = Math.min((now - holdStart) / HOLD_MS, 1);
+      var size = min + (max - min) * p;
+      circle.style.width = size + 'px';
+      circle.style.height = size + 'px';
+      circle.style.borderColor = 'rgba(195,49,73,' + (0.55 + 0.4 * p) + ')';
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else finishHold();
+    }
+    raf = requestAnimationFrame(tick);
+  }
+
+  function cancelHold() {
+    cancelAnimationFrame(raf);
+    showHoldVisuals(false);
+    cue.hold('press and hold');
+  }
+
+  function finishHold() {
+    cancelAnimationFrame(raf);
+    leaveHold();
+    if (isHold(flow[i])) i += 1;   // step past the gate
+    advance();
+  }
+
+  /* Would the final line still be a SINGLE line at font-size `px`?
+     Measured on a detached clone (keeps class="line", so `.line em` widens the
+     italic word) inside a stand-in of the real stage. Compares wrap-allowed
+     height to forced-one-line height — the tall `em` cancels out, so this is
+     reliable on any screen width. The live line is never touched. */
+  function fitsOneLine(px) {
+    var stage = lineEl.parentElement;
+    var scs = getComputedStyle(stage);
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden;'
+      + 'box-sizing:border-box;display:flex;align-items:center;justify-content:center;'
+      + 'width:' + stage.clientWidth + 'px;'
+      + 'padding:' + scs.paddingTop + ' ' + scs.paddingRight + ' '
+                   + scs.paddingBottom + ' ' + scs.paddingLeft + ';';
+    var c = lineEl.cloneNode(true);
+    c.classList.add('in');
+    c.style.opacity = '1';
+    c.style.transform = 'none';
+    c.style.transition = 'none';
+    c.style.fontSize = px + 'px';
+    wrap.appendChild(c);
+    document.body.appendChild(wrap);
+    var hWrapAllowed = c.getBoundingClientRect().height;   // may wrap
+    c.style.whiteSpace = 'nowrap';
+    var hOneLine = c.getBoundingClientRect().height;       // forced single line
+    document.body.removeChild(wrap);
+    return hWrapAllowed <= hOneLine + 1;
+  }
+
+  /* ---------- TAP: advance, or grow the final line ---------- */
+  tapPlane.addEventListener('click', function () {
+    if (growFinal) {
+      var next = finalSize + 3;
+      if (fitsOneLine(next)) {
+        finalSize = next;
+        lineEl.style.fontSize = next + 'px';   // still one line — grow
+      }
+      // else: at max for this width — tap does nothing (re-checked each tap,
+      // so a transient bad read never permanently caps growth)
+      return;
+    }
+    advance();
+  });
+
+  ['pointerdown', 'touchstart', 'mousedown'].forEach(function (ev) {
+    holdPlane.addEventListener(ev, beginHold, { passive: false });
+  });
+  ['pointerup', 'pointercancel', 'touchend', 'touchcancel', 'mouseup', 'mouseleave'].forEach(function (ev) {
+    holdPlane.addEventListener(ev, function (e) {
+      if (e && e.preventDefault) e.preventDefault();
+      if (isHold(flow[i])) cancelHold();
+    }, { passive: false });
+  });
+
+  /* ---- legal footer: wake it when a pointer/touch nears the bottom edge ---- */
+  (function () {
+    var legal = document.querySelector('.qr-legal');
+    if (!legal) return;
+    var t;
+    function near() {
+      legal.setAttribute('data-near', 'true');
+      clearTimeout(t);
+      t = setTimeout(function () { legal.setAttribute('data-near', 'false'); }, 2600);
+    }
+    function check(y) { if (y >= window.innerHeight - 120) near(); }
+    window.addEventListener('pointermove', function (e) { check(e.clientY); }, { passive: true });
+    window.addEventListener('touchstart', function (e) {
+      if (e.touches && e.touches[0]) check(e.touches[0].clientY);
+    }, { passive: true });
+  })();
+
+  advance();
+})();
+</script>
+
+<!-- ═══════════ GoatCounter — page views + JS-error events ═══════════ -->
+<script data-goatcounter="https://annagreyhem.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+/* Report any uncaught JS error as a GoatCounter event, grouped under js-error/… */
+(function () {
+  function report(label) {
+    try {
+      var fire = function () {
+        window.goatcounter.count({
+          path:  'js-error' + location.pathname,
+          title: String(label).slice(0, 240),
+          event: true
+        });
+      };
+      if (window.goatcounter && window.goatcounter.count) return fire();
+      var n = 0, t = setInterval(function () {
+        if (window.goatcounter && window.goatcounter.count) { clearInterval(t); fire(); }
+        else if (++n > 30) clearInterval(t);
+      }, 500);
+    } catch (_) {}
+  }
+  window.addEventListener('error', function (e) {
+    report((e.message || 'error') + ' @ ' + (e.filename || '') + ':' + (e.lineno || 0));
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    var r = e.reason;
+    report('promise: ' + ((r && (r.message || r)) || 'unhandledrejection'));
+  });
+})();
+</script>
+
+</body>
+</html>
