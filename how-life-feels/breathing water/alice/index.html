@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Sentry error monitoring -->
+<script
+  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
+  crossorigin="anonymous"
+></script>
+<script>
+  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
+  Sentry.onLoad(function () {
+    Sentry.init({
+      release: "anna-greyhem-website@1.0.0",
+    });
+  });
+</script>
+
+<!--
+  QR EDITION · breathing-water → ALICE (Fading)
+  Built on the shared QR base — palette, grain, foot-scrim and
+  .qr-legal come from qr-base.css. Scene logic below is bespoke.
+-->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0c">
+<title>Fading — Anna Greyhem</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/images/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="icon" href="/assets/images/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../../assets/css/qr-base.css">
+<script src="../../../assets/js/qr-viewport-fix.js"></script>
+<script>
+/* Preview-only safety net: some preview servers don't tokenise deep relative
+   asset links, which blocks the shared stylesheets. If that happens the design
+   tokens are missing — re-link them with the current auth token. In production
+   the sheets load normally and this is a no-op. */
+(function(){
+  function fix(){
+    if (getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()) return;
+    var t = (location.search.match(/[?&]t=([^&]+)/) || [])[1];
+    if (!t) return;
+    var base = location.href.split('/how-life-feels/')[0] + '/';
+    ['assets/fonts/fonts.css','assets/css/qr-base.css'].forEach(function(p){
+      var l = document.createElement('link'); l.rel = 'stylesheet';
+      l.href = base + p + '?t=' + t; document.head.appendChild(l);
+    });
+  }
+  if (document.readyState !== 'loading') fix();
+  else document.addEventListener('DOMContentLoaded', fix);
+})();
+</script>
+<style>
+  body {
+    font-family: var(--read);
+    font-size: var(--read-immersive);
+    line-height: 1.85;
+  }
+
+  /* ---- pages ---- */
+  .story { display:none; min-height:100vh; animation:fadein 1.4s var(--ease) forwards; }
+  .story.active { display:block; }
+  @keyframes fadein { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes appear { from{opacity:0} to{opacity:1} }
+
+  .story-inner { max-width:36rem; margin:0 auto; padding:clamp(64px,16vh,140px) var(--gutter) 140px; }
+  .center-page { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:clamp(64px,16vh,140px) var(--gutter); text-align:center; }
+
+  h1 {
+    font-family:var(--serif); font-style:italic; font-weight:600;
+    font-size:clamp(36px,8.4vw,50px); color:var(--bone);
+    letter-spacing:0.005em; margin:0 0 clamp(30px,6vh,46px); line-height:1.14;
+  }
+  h1::after {
+    content:""; display:block; width:56px; height:2px;
+    background:var(--cherry-3); opacity:0.85; margin-top:clamp(16px,2.6vh,22px);
+  }
+  p {
+    font-family:var(--read); font-weight:400; font-size:var(--read-immersive);
+    line-height:1.85; color:var(--bone); margin:0 0 1.5em; text-wrap:pretty;
+  }
+  p:last-of-type { margin-bottom:0; }
+  em { font-family:var(--serif); font-style:italic; font-size:1.08em; color:#f6f2e8; }
+
+  /* ---- next-page chevron ---- */
+  #fixed-nav {
+    position:fixed; bottom:calc(52px + env(safe-area-inset-bottom) + var(--qr-toolbar-gap, 0px)); left:50%;
+    z-index:76; display:none;
+    font-size:30px; color:var(--bone-3); opacity:0.5; padding:8px 48px; cursor:pointer;
+    transition:color 0.35s var(--ease),opacity 0.5s var(--ease); user-select:none;
+    transform:translateX(-50%) translateY(0);
+  }
+  #fixed-nav:hover { color:var(--bone); opacity:1; }
+  /* reached the bottom of the page — make the “continue” cue unmistakable */
+  #fixed-nav.at-end {
+    color:var(--bone); opacity:1;
+    animation:navbounce 1.7s var(--ease) infinite;
+  }
+  @keyframes navbounce {
+    0%,100% { transform:translateX(-50%) translateY(0); }
+    50%     { transform:translateX(-50%) translateY(7px); }
+  }
+  @media (prefers-reduced-motion: reduce) { #fixed-nav.at-end { animation:none; } }
+
+  /* Legal footer: not fixed here — it sits in normal flow at the true end
+     of each story section, so it only appears once the reader has actually
+     scrolled past the text (never floating over it). No foot-scrim needed. */
+  body::after { display:none !important; }
+  .qr-legal {
+    position:relative !important; left:auto !important; right:auto !important;
+    bottom:auto !important; transform:none !important;
+    display:flex !important; justify-content:center !important; width:100%;
+    padding:0 var(--gutter) calc(56px + env(safe-area-inset-bottom)) !important;
+    opacity:0.5 !important;
+  }
+
+  /* ---- FADING title page ---- */
+  #fading-title {
+    font-family:var(--serif); font-style:normal; font-weight:300;
+    font-size:clamp(52px,12vw,108px); letter-spacing:0.12em; color:var(--bone);
+    opacity:0; animation:titlefade 2.5s var(--ease) forwards;
+  }
+  @keyframes titlefade { 0%{opacity:0} 100%{opacity:1} }
+
+  /* ---- DECISION page ---- */
+  #decision-text {
+    font-family:var(--serif); font-style:italic; font-size:clamp(22px,3.5vw,34px);
+    color:var(--bone); line-height:1.6; letter-spacing:0.01em;
+    margin-bottom:60px; opacity:0; animation:fadein 1.5s var(--ease) 0.5s forwards;
+  }
+  .decision-buttons {
+    display:flex; flex-direction:column; gap:24px; align-items:center;
+    opacity:0; animation:fadein 1s var(--ease) 3.8s forwards;
+  }
+  .decision-btn {
+    background:none; border:none;
+    font-family:var(--serif); font-style:italic; font-size:clamp(16px,2vw,22px);
+    color:var(--bone-3); letter-spacing:0.06em; cursor:pointer; padding:8px 0;
+    border-bottom:1px solid var(--bone-4);
+    transition:color 0.3s var(--ease), border-color 0.3s var(--ease);
+  }
+  .decision-btn:hover { color:var(--bone); border-color:var(--bone-3); }
+  .decision-btn.primary { color:var(--bone); border-color:var(--bone-3); font-size:clamp(18px,2.2vw,24px); }
+
+  /* ---- rabbit-hole name flash ---- */
+  #alice-name { display:inline; transition:opacity 0.3s var(--ease); }
+
+  /* ---- ALIVE page ---- */
+  #alive-page { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:80px 40px; }
+  #alive-text {
+    font-family:var(--serif); font-style:italic; font-size:clamp(22px,3.5vw,36px);
+    color:var(--bone); letter-spacing:0.03em; text-align:center; line-height:1.9; max-width:36rem;
+  }
+
+  /* ---- TYPEWRITER page ---- */
+  #typewriter-page { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 40px; }
+  #typewriter-text {
+    max-width:36rem; width:88vw; white-space:pre-wrap; tab-size:6;
+    font-family:var(--read); font-size:var(--read-immersive); line-height:1.85;
+    color:var(--bone); min-height:200px;
+  }
+
+  .sletter { display:inline-block; }
+
+  /* typewriter — each glyph lands instantly, like a real keystroke */
+  .tw-ch { opacity:0; animation:tw-in 0.09s linear forwards; }
+  @keyframes tw-in { to { opacity:1; } }
+  /* the signature, in Anna's hand */
+  .tw-sig {
+    font-family:var(--serif); font-style:italic; font-size:1.5em;
+    color:#f6f2e8; letter-spacing:0.02em; line-height:1.4;
+  }
+  /* a real text caret — hard blink, no glow, solid while typing */
+  .tw-caret {
+    display:inline-block; width:2px; height:1.12em;
+    margin-left:1px; vertical-align:-0.17em; border-radius:0.5px;
+    background:var(--bone);
+    animation:tw-blink 1.06s step-end infinite;
+  }
+  .tw-caret.typing { animation:none; opacity:1; }
+  @keyframes tw-blink { 0%,50%{opacity:1} 50.01%,100%{opacity:0} }
+
+  @media (max-width:600px) { .story-inner { padding:60px 24px 120px; } .center-page { padding:60px 24px; } }
+  @media (prefers-reduced-motion: reduce) {
+    .story { animation:none; }
+    .tw-ch { animation:none; opacity:1; filter:none; }
+    .tw-caret { animation:none; }
+  }
+</style>
+</head>
+<body data-screen-label="QR · Breathing Water · Fading">
+
+<span class="grain" aria-hidden="true"></span>
+
+<div id="fixed-nav">&#8964;</div>
+<!-- P0: FADING title -->
+<div class="story active" id="p0">
+  <div class="center-page">
+    <div id="fading-title">FADING</div>
+  </div>
+</div>
+<!-- P1: Letting go -->
+<div class="story" id="p1">
+  <div class="story-inner">
+    <h1>Letting Go</h1>
+    <p>The darkness wrapped her arms around me and sang me a lullaby.</p>
+    <p>I faded<br>and tried to remember all the people I had been.</p>
+    <p>Sometimes I wished I was Alice.</p>
+    <p>The water rose higher and higher, up to my lips. Between kisses, I breathed it in. It filled my lungs.</p>
+    <p>Deep in the glacier crack I saw me, frozen.</p>
+    <p>I was Alice this morning and I haven&rsquo;t changed since.</p>
+    <p><em>I am Alice.</em></p>
+  </div>
+</div>
+<!-- P2: Decision -->
+<div class="story" id="p2">
+  <div class="center-page">
+    <div id="decision-text">
+      <span class="d-line" style="opacity:0;display:block;animation:appear 1.2s ease 0.4s forwards;">I wasn&rsquo;t supposed to die.</span>
+      <span class="d-line" style="opacity:0;display:block;animation:appear 1.2s ease 1.5s forwards;">Was I?</span>
+      <span class="d-line" style="opacity:0;display:block;animation:appear 1.2s ease 2.6s forwards;">Why did I die?</span>
+    </div>
+    <div class="decision-buttons">
+      <button class="decision-btn primary" id="btn-back">Decide again.</button>
+      <button class="decision-btn" id="btn-forward">Go further into the darkness.</button>
+    </div>
+  </div>
+</div>
+<!-- P3: Falling into the rabbit hole -->
+<div class="story" id="p3">
+  <div class="story-inner">
+    <h1>Falling Into the Rabbit Hole</h1>
+    <p>Alice ran after the rabbit. She couldn&rsquo;t let the little thing get away. She still had so many carrots to give it. So many cuddle sessions already planned. So, Alice ran as fast as she could.</p>
+    <p>And then &mdash; oops. Down she tumbled, right after it. At first the hole was dark and she was afraid, but then she saw that it wasn&rsquo;t dark at all. It glittered. Streaks of color stretched across the walls like northern lights. The rabbit and she drifted together on a rainbow. Flying felt wonderful. The rabbit drummed its foot without pause, waiting for something. After a while, it grew darker again. They seemed to be reaching the other end of the tunnel.</p>
+    <p>Alice and the rabbit drifted together on a rainbow. The rabbit stood over her. With one last crack it broke her neck and held her beneath its paws as it tore <span id="alice-name">Alice</span> apart.</p>
+  </div>
+</div>
+<!-- P4: Hush -->
+<div class="story" id="p4">
+  <div class="story-inner">
+    <h1>Hush</h1>
+    <p>It&rsquo;s quieter here than you expected. Isn&rsquo;t it?</p>
+    <p>Don&rsquo;t worry. Everyone thinks it will be louder. The dying, I mean.</p>
+    <p>I was surprised too, after Ariane killed me.</p>
+    <p>Sit down. You&rsquo;ll get used to it. We all do.</p>
+    <br>
+    <p>Do you want some tea?</p>
+  </div>
+</div>
+<!-- P5: Blood moon -->
+<div class="story" id="p5b">
+  <div class="story-inner">
+    <h1>Blood Moon</h1>
+    <p>The moon had always been curious. Humans made wishes when stars died. They looked up at the burning, the falling, the fading. Then they closed their eyes and made a wish.</p>
+    <p>So, the moon tried the other way around, each time a human life flickered out.</p>
+    <p>She followed Anna. Her becoming, longing, falling, fading. Then the moon closed her eyes.</p>
+    <p>And when she opened them again, far away in the cold water she saw Alice.</p>
+  </div>
+</div>
+<!-- P5: I was alive this morning -->
+<div class="story" id="p5">
+  <div id="alive-page">
+    <div id="alive-text">
+      I was alive this morning,<br>
+      but I have changed a few times since then.
+    </div>
+  </div>
+</div>
+<!-- P6: Dear reader Typewriter -->
+<div class="story" id="p6">
+  <div id="typewriter-page">
+    <div id="typewriter-text"></div>
+  </div>
+</div>
+<!-- P7: 13-13-13 -->
+<div class="story" id="p7">
+  <div class="story-inner">
+    <h1>13-13-13</h1>
+    <p>He tastes like salt water and smells like Christmas with a hint of yesterday&rsquo;s weed.</p>
+    <p>His black eyes never blink.</p>
+    <p>I always wanted a pretty death. Maybe a bit tragic and younger than expected.</p>
+    <p>He was all of that.</p>
+    <p>I felt so sure that he was the one.</p>
+    <p>When I saw his eyes, when I heard his silence, I knew.</p>
+    <p>I fell for him.</p>
+    <p>He led me home, drowned me.</p>
+    <p style="margin-top:3em;">He was in me while I died.</p>
+  </div>
+</div>
+<!-- P8: The End -->
+<div class="story" id="p8">
+  <div class="story-inner">
+    <h1>The End</h1>
+    <p style="margin-bottom:0;">Stop staring at me.</p>
+    <p style="margin-bottom:0;">With those big eyes waiting for a story.</p>
+    <p style="margin-bottom:0;">Why do you expect more to happen?</p>
+    <p style="margin-bottom:2.4em;">This is the end. You chose the end.</p>
+    <p style="margin-bottom:2.4em;">You would have died one day eventually. Why wait 60 more years?</p>
+    <p>Close the book. Your story has ended here.</p>
+  </div>
+</div>
+
+<nav class="qr-legal" aria-label="Legal">
+  <a class="mark" href="https://annagreyhem.com/">Anna <em>Greyhem</em></a>
+  <span class="sep" aria-hidden="true">·</span>
+  <a href="https://annagreyhem.com/impressum/">Legal Notice</a>
+  <span class="sep" aria-hidden="true">·</span>
+  <a href="https://annagreyhem.com/datenschutz/">Privacy</a>
+</nav>
+
+<script>
+var PAGES = ['p0','p1','p2','p3','p4','p5b','p5','p6','p7','p8'];
+var TOTAL = PAGES.length - 1;
+var current = 0;
+function getEl(n) { return document.getElementById(PAGES[n]); }
+var fixedNav = document.getElementById('fixed-nav');
+fixedNav.addEventListener('click', function() { navigate(1); });
+// Brighten + bounce the chevron once the reader has reached the foot of a page.
+function updateNav() {
+  if (fixedNav.style.display === 'none') { fixedNav.classList.remove('at-end'); return; }
+  var legal = document.querySelector('.qr-legal');
+  var legalRect = legal && legal.getBoundingClientRect();
+  var overFooter = legalRect && legalRect.top < window.innerHeight - 20;
+  if (overFooter) {
+    fixedNav.style.position = 'absolute';
+    fixedNav.style.top = (window.scrollY + legalRect.top - fixedNav.offsetHeight - 12) + 'px';
+    fixedNav.style.bottom = 'auto';
+  } else {
+    fixedNav.style.position = '';
+    fixedNav.style.top = '';
+    fixedNav.style.bottom = '';
+  }
+  var atEnd = PAGES[current] === 'p0' || overFooter || (window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 48;
+  fixedNav.classList.toggle('at-end', atEnd);
+}
+window.addEventListener('scroll', updateNav, {passive:true});
+window.addEventListener('resize', updateNav, {passive:true});
+function navigate(dir) {
+  var next = current + dir;
+  if (next < 0 || next > TOTAL) return;
+  getEl(current).classList.remove('active');
+  current = next;
+  getEl(current).classList.add('active');
+  window.scrollTo(0,0);
+  showPage(current);
+}
+document.getElementById('btn-back').addEventListener('click', function() {
+  window.location.href = 'https://annagreyhem.com/how-life-feels/breathing-water';
+});
+document.getElementById('btn-forward').addEventListener('click', function() {
+  navigate(1);
+});
+function showPage(n) {
+  var pageId = PAGES[n];
+  fixedNav.style.display = (n < TOTAL && pageId !== 'p2' && pageId !== 'p6' && pageId !== 'p8') ? 'block' : 'none';
+  requestAnimationFrame(updateNav);
+  if (pageId === 'p3') startAliceFlash();
+  if (pageId === 'p6') startTypewriter();
+}
+// Alice -> Anna flash
+function startAliceFlash() {
+  var el = document.getElementById('alice-name');
+  if (!el) return;
+  function flash() {
+    el.style.opacity = '0';
+    setTimeout(function() {
+      el.textContent = 'Anna';
+      el.style.opacity = '1';
+      setTimeout(function() {
+        el.style.opacity = '0';
+        setTimeout(function() {
+          el.textContent = 'Alice';
+          el.style.opacity = '1';
+          setTimeout(flash, 9000 + Math.random() * 8000);
+        }, 400);
+      }, 2200);
+    }, 400);
+  }
+  setTimeout(flash, 3000 + Math.random() * 4000);
+}
+// Typewriter
+var twBlocks = [
+  { text: 'Dear reader,' },
+  { text: 'How did you end up here?' },
+  { text: 'You knew this wasn\u2019t the way.\nAnd still\u2026 you kept going.' },
+  { text: 'Why?\nI told you it burns.\nYou wanted to feel it anyway.', deleteAfter: true, deletePause: 2200 },
+  { text: 'Why didn\u2019t you take my hand? I could have saved you.' },
+  { text: 'Don\u2019t be sad. Death suits you well. We\u2019ll meet up again eventually. Give me a few more years and I\u2019ll be right at your side.' },
+  { text: 'Kiss,\n', sig: 'Anna' }
+];
+var twRunning = false;
+function startTypewriter() {
+  if (twRunning) return;
+  twRunning = true;
+  var textEl = document.getElementById('typewriter-text');
+  if (!textEl) return;
+  textEl.textContent = '';
+  var caret = document.createElement('span');
+  caret.className = 'tw-caret';
+  textEl.appendChild(caret);
+  var settings = { min:34, max:72, punctPause:170, paraPause:920, thinkPause:1200, deleteSpeed:40 };
+
+  function sleep(ms) { return new Promise(function(r){ setTimeout(r,ms); }); }
+  function rand(a,b) { return Math.random()*(b-a)+a; }
+  function followCaret() {
+    var rect = caret.getBoundingClientRect();
+    var margin = 100;
+    var overflow = rect.bottom - (window.innerHeight - margin);
+    if (overflow > 0) window.scrollBy(0, overflow);
+  }
+  function addChar(ch, cls) {
+    var s = document.createElement('span');
+    s.className = 'tw-ch' + (cls ? ' ' + cls : '');
+    s.textContent = ch;
+    textEl.insertBefore(s, caret);
+    followCaret();
+  }
+  function removeChar() {
+    var prev = caret.previousSibling;
+    if (prev) textEl.removeChild(prev);
+    followCaret();
+  }
+  async function typeText(str, cls) {
+    caret.classList.add('typing');
+    for (var i = 0; i < str.length; i++) {
+      var ch = str[i];
+      addChar(ch, cls);
+      var delay = rand(settings.min, settings.max);
+      if (',.!?\u2026'.indexOf(ch) >= 0) delay += settings.punctPause;
+      if (ch === '\n') delay += 100;
+      await sleep(delay);
+    }
+    caret.classList.remove('typing');
+  }
+  async function deleteText(count) {
+    caret.classList.add('typing');
+    for (var i = 0; i < count; i++) {
+      removeChar();
+      await sleep(settings.deleteSpeed);
+    }
+    caret.classList.remove('typing');
+  }
+  async function run() {
+    await sleep(2800);
+    for (var i = 0; i < twBlocks.length; i++) {
+      var block = twBlocks[i];
+      if (i !== 0) {
+        addChar('\n'); addChar('\n');
+        await sleep(settings.paraPause);
+      }
+      if (i === 0) await sleep(settings.thinkPause);
+      await typeText(block.text);
+      if (block.sig) { addChar('\t'); await sleep(300); await typeText(block.sig, 'tw-sig'); }
+      if (block.deleteAfter) {
+        await sleep(block.deletePause || 1800);
+        await deleteText(block.text.length + 2);
+        await sleep(600);
+      }
+    }
+    await sleep(1200);
+    fixedNav.style.display = 'block';
+  }
+  run();
+}
+// LEGAL footer — brighten near the bottom edge
+(function(){
+  var legal = document.querySelector('.qr-legal');
+  if(!legal) return;
+  var nearT;
+  function near(){
+    legal.setAttribute('data-near','true');
+    clearTimeout(nearT);
+    nearT = setTimeout(function(){ legal.setAttribute('data-near','false'); }, 2600);
+  }
+  function check(y){ if(y >= window.innerHeight - 120) near(); }
+  function onNav(t){ return t && t.closest && t.closest('#fixed-nav'); }
+  window.addEventListener('pointermove', function(e){ if(onNav(e.target)) return; check(e.clientY); }, {passive:true});
+  window.addEventListener('touchstart', function(e){
+    if(onNav(e.target)) return;
+    if(e.touches && e.touches[0]) check(e.touches[0].clientY);
+  }, {passive:true});
+})();
+// init
+showPage(0);
+</script>
+
+<!-- ═══════════ GoatCounter — page views + JS-error events ═══════════ -->
+<script data-goatcounter="https://annagreyhem.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+/* Report any uncaught JS error as a GoatCounter event, grouped under js-error/… */
+(function () {
+  function report(label) {
+    try {
+      var fire = function () {
+        window.goatcounter.count({
+          path:  'js-error' + location.pathname,
+          title: String(label).slice(0, 240),
+          event: true
+        });
+      };
+      if (window.goatcounter && window.goatcounter.count) return fire();
+      var n = 0, t = setInterval(function () {
+        if (window.goatcounter && window.goatcounter.count) { clearInterval(t); fire(); }
+        else if (++n > 30) clearInterval(t);
+      }, 500);
+    } catch (_) {}
+  }
+  window.addEventListener('error', function (e) {
+    report((e.message || 'error') + ' @ ' + (e.filename || '') + ':' + (e.lineno || 0));
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    var r = e.reason;
+    report('promise: ' + ((r && (r.message || r)) || 'unhandledrejection'));
+  });
+})();
+</script>
+
+</body>
+</html>
