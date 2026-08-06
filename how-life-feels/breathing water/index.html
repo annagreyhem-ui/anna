@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Sentry error monitoring -->
+<script
+  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
+  crossorigin="anonymous"
+></script>
+<script>
+  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
+  Sentry.onLoad(function () {
+    Sentry.init({
+      release: "anna-greyhem-website@1.0.0",
+    });
+  });
+</script>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0a0c" />
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/images/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="icon" href="/assets/images/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+<title>Breathing Water — Anna Greyhem</title>
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../assets/css/qr-base.css">
+<script src="../../assets/js/qr-viewport-fix.js"></script>
+<script>
+/* Preview-only safety net: some preview servers don't tokenise relative asset
+   links, blocking the shared stylesheets. If the design tokens are missing,
+   re-link them with the current auth token. In production this is a no-op. */
+(function(){
+  function fix(){
+    if (getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()) return;
+    var t = (location.search.match(/[?&]t=([^&]+)/) || [])[1];
+    if (!t) return;
+    var base = location.href.split('/how-life-feels/')[0] + '/';
+    ['assets/fonts/fonts.css','assets/css/qr-base.css'].forEach(function(p){
+      var l = document.createElement('link'); l.rel = 'stylesheet';
+      l.href = base + p + '?t=' + t; document.head.appendChild(l);
+    });
+  }
+  if (document.readyState !== 'loading') fix();
+  else document.addEventListener('DOMContentLoaded', fix);
+})();
+</script>
+<style>
+  body { height: 100svh; overflow: hidden; }
+
+  /* Legal footer: keep it permanently legible (Impressum / Datenschutz
+     must stay easily recognisable). !important so it survives the
+     preview safety-net re-appending qr-base.css after this block. */
+  .qr-legal { opacity: 0.5 !important; }
+
+  /* ---------- TAP-THROUGH STAGE ---------- */
+  .stage {
+    position: fixed; inset: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 var(--gutter); text-align: center;
+    transition: opacity 0.9s var(--ease);
+  }
+  .stage.gone { opacity: 0; pointer-events: none; }
+  #line {
+    font-family: var(--read);
+    font-weight: 400;
+    font-size: var(--read-immersive);
+    line-height: 1.78;
+    color: var(--bone);
+    max-width: 30ch;
+    margin: 0 auto;
+    min-height: 6em;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+    text-wrap: pretty;
+  }
+  #line.in { opacity: 1; transform: none; }
+  #line em { font-family: var(--serif); font-style: italic; font-size: 1.08em; color: #f6f2e8; }
+
+  #tap {
+    position: fixed; inset: 0; background: transparent; border: 0;
+    cursor: pointer; z-index: 30;
+  }
+
+  /* ---------- CHOICE SCREEN ---------- */
+  /* lifted slightly above centre so the lower half keeps clear space
+     between "the deep" and the "hold to choose" instruction */
+  .choice { position: fixed; inset: 0; z-index: 14; display: none; transform: translateY(-6vh); }
+  .choice.show { display: block; }
+  .zone {
+    position: absolute; left: 0; right: 0; height: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: clamp(14px, 2.4vh, 20px);
+    cursor: pointer; user-select: none;
+    border: 0; background: transparent; width: 100%; padding: 0;
+    opacity: 0; transition: opacity 1s var(--ease);
+  }
+  .choice.show .zone { opacity: 1; }
+  .zone.top    { top: 0;    background: radial-gradient(120% 150% at 50% -10%, rgba(158,36,56,0.14), transparent 62%); }
+  .zone.bottom { bottom: 0; background: radial-gradient(120% 150% at 50% 110%, rgba(44,58,71,0.55), transparent 62%); }
+  .zone .name {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: clamp(30px, 9vw, 46px); letter-spacing: 0.12em; line-height: 1;
+    transition: letter-spacing 0.8s var(--ease);
+  }
+  .zone.top .name    { color: var(--bone); }
+  .zone.bottom .name { color: var(--drowned-3); }
+  .zone .sub {
+    font-family: var(--mono); font-size: 9px;
+    letter-spacing: 0.3em; text-transform: uppercase; color: var(--bone-3);
+  }
+  /* both names sit centred in their half; the sub falls directly
+     beneath each name at the same size and gap — fully symmetric. */
+
+  /* the waterline that divides them */
+  #waterline { position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); pointer-events: none; z-index: 6; }
+  @keyframes wave { from { transform: translateX(0); } to { transform: translateX(-25%); } }
+
+  /* expanding hold-ring */
+  #ring {
+    position: fixed; border-radius: 50%; border: 1px solid rgba(238,234,224,0.5);
+    transform: translate(-50%, -50%); pointer-events: none; z-index: 18; display: none;
+  }
+
+  /* fade-to-dark on commit */
+  #fade {
+    position: fixed; inset: 0; z-index: 24; background: var(--ink);
+    opacity: 0; pointer-events: none; transition: opacity 1s var(--ease);
+  }
+  #fade.in { opacity: 1; }
+</style>
+</head>
+<body data-screen-label="QR · Breathing Water">
+
+<span class="grain" aria-hidden="true"></span>
+
+<!-- the passage, one breath at a time -->
+<div class="stage" id="stage">
+  <div id="line"></div>
+</div>
+<button id="tap" aria-label="Reveal next line"></button>
+
+<!-- the held choice: surface or deep -->
+<div class="choice" id="choice">
+  <button class="zone top" data-who="anna" aria-label="Reach up — Anna, the surface">
+    <span class="name">Anna</span>
+    <span class="sub">the surface</span>
+  </button>
+
+  <svg id="waterline" width="100%" height="26" viewBox="0 0 400 26" preserveAspectRatio="none" aria-hidden="true">
+    <g style="animation: wave 5s linear infinite;">
+      <path d="M0,13 C25,7 50,19 75,13 C100,7 125,19 150,13 C175,7 200,19 225,13 C250,7 275,19 300,13 C325,7 350,19 375,13 C400,7 425,19 450,13 C475,7 500,19 525,13"
+            stroke="rgba(107,128,149,0.45)" stroke-width="1" fill="none"/>
+    </g>
+  </svg>
+
+  <button class="zone bottom" data-who="alice" aria-label="Reach down — Alice, the deep">
+    <span class="name">Alice</span>
+    <span class="sub">the deep</span>
+  </button>
+</div>
+
+<span id="ring" aria-hidden="true"></span>
+<div id="fade" aria-hidden="true"></div>
+
+<div class="cue" id="cue">tap</div>
+
+<nav class="qr-legal" aria-label="Legal">
+  <a class="mark" href="https://annagreyhem.com/">Anna <em>Greyhem</em></a>
+  <span class="sep" aria-hidden="true">·</span>
+  <a href="https://annagreyhem.com/impressum/">Legal Notice</a>
+  <span class="sep" aria-hidden="true">·</span>
+  <a href="https://annagreyhem.com/datenschutz/">Privacy</a>
+</nav>
+
+<script>
+(() => {
+  const HOLD_MS = 2200;
+  const flow = [
+    'Anna kept floating in the water.<br>She couldn\u2019t feel the cold anymore.',
+    'Her body went quiet.',
+    'She looked down.',
+    'Alice was below her, deep in the ocean. Smiling, ready to drag her into eternal darkness.',
+    'She looked up.',
+    'Anna was above her, at the surface.<br>Tears ran down her face; she looked strangely distorted through the water.',
+    'Both reached for her.'
+  ];
+  const destinations = {
+    anna:  'https://annagreyhem.com/how-life-feels/breathing-water/anna',
+    alice: 'https://annagreyhem.com/how-life-feels/breathing-water/alice'
+  };
+
+  /* ---- shared hint-cue behaviour (inlined so it loads reliably in preview) ----
+     .show(t)  show a tap-hint now; it hides on any interaction and only
+               reappears after IDLE_MS of nothing happening.
+     .idle(t)  arm that idle re-show without showing it right now.
+     .hold(t)  a permanent hint (used for "hold" — shown continuously).
+     .off()    hide it and stop the idle clock.
+     The pulse animation lives centrally in qr-base.css (.cue.on). */
+  const IDLE_MS = 7000;
+  function makeCue(el, idleMs) {
+    idleMs = idleMs || 7000;
+    let timer = null, mode = 'off', text = '';
+    const paint = (on) => el.classList.toggle('on', on);
+    const clear = () => { if (timer) { clearTimeout(timer); timer = null; } };
+    const arm = () => { clear(); timer = setTimeout(() => { if (mode === 'tap') { el.textContent = text; paint(true); } }, idleMs); };
+    const api = {
+      show: (t) => { text = t; mode = 'tap'; el.textContent = t; paint(true); arm(); },
+      idle: (t) => { text = t; mode = 'tap'; paint(false); arm(); },
+      hold: (t) => { text = t; mode = 'hold'; el.textContent = t; paint(true); clear(); },
+      off:  () => { mode = 'off'; text = ''; paint(false); clear(); },
+      poke: () => { if (mode === 'tap') { paint(false); arm(); } }
+    };
+    ['pointerdown', 'keydown'].forEach((ev) => document.addEventListener(ev, api.poke, { passive: true }));
+    return api;
+  }
+
+  const stage  = document.getElementById('stage');
+  const line   = document.getElementById('line');
+  const tap    = document.getElementById('tap');
+  const cue    = makeCue(document.getElementById('cue'), IDLE_MS);
+  const choice = document.getElementById('choice');
+  const ring   = document.getElementById('ring');
+  const fade   = document.getElementById('fade');
+
+  let i = 0, phase = 'flow', shown = false;
+  let raf = null, timer = null, start = 0, committed = false;
+
+  /* ---------- passage ---------- */
+  function show(html) {
+    line.classList.remove('in');
+    setTimeout(() => { line.innerHTML = html; line.classList.add('in'); }, 280);
+  }
+  function advance() {
+    if (phase !== 'flow') return;
+    if (i < flow.length) {
+      show(flow[i++]);
+      if (!shown) { shown = true; setTimeout(() => cue.show('tap'), 900); }
+    } else {
+      enterChoice();
+    }
+  }
+  tap.addEventListener('click', advance);
+
+  /* ---------- the choice ---------- */
+  function enterChoice() {
+    phase = 'choice';
+    cue.off();
+    tap.style.display = 'none';
+    stage.classList.add('gone');
+    choice.classList.add('show');
+    /* the "hold" hint occurs rarely, so keep it visible the whole time */
+    setTimeout(() => cue.hold('hold to choose'), 700);
+  }
+
+  function startRing(x, y, color) {
+    start = performance.now();
+    const maxR = Math.min(innerWidth, innerHeight) * 0.85;
+    ring.style.display = 'block';
+    ring.style.left = x + 'px';
+    ring.style.top = y + 'px';
+    ring.style.borderColor = color;
+    cancelAnimationFrame(raf);
+    (function tick(now) {
+      const p = Math.min((now - start) / HOLD_MS, 1);
+      const s = 22 + (maxR - 22) * p;
+      ring.style.width = s + 'px';
+      ring.style.height = s + 'px';
+      ring.style.opacity = String(0.25 + 0.5 * p);
+      if (p < 1) raf = requestAnimationFrame(tick);
+    })(start);
+  }
+  function stopRing() { cancelAnimationFrame(raf); ring.style.display = 'none'; }
+
+  function down(e) {
+    if (committed) return;
+    const who = e.currentTarget.dataset.who;
+    const p = e.touches ? e.touches[0] : e;
+    const color = who === 'anna' ? 'rgba(238,234,224,0.6)' : 'rgba(107,128,149,0.7)';
+    startRing(p.clientX, p.clientY, color);
+    timer = setTimeout(() => finish(who), HOLD_MS);
+  }
+  function up() {
+    clearTimeout(timer);
+    stopRing();
+  }
+
+  function finish(who) {
+    committed = true;
+    clearTimeout(timer); stopRing();
+    cue.off();
+    fade.classList.add('in');
+    setTimeout(() => { window.location.href = destinations[who]; }, 1000);
+  }
+
+  document.querySelectorAll('.zone').forEach((z) => {
+    ['pointerdown','touchstart'].forEach(ev => z.addEventListener(ev, (e) => { e.preventDefault(); down(e); }, { passive: false }));
+    ['pointerup','pointercancel','pointerleave','touchend'].forEach(ev => z.addEventListener(ev, up));
+  });
+
+  setTimeout(advance, 500);
+})();
+</script>
+
+<!-- ═══════════ GoatCounter — page views + JS-error events ═══════════ -->
+<script data-goatcounter="https://annagreyhem.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+/* Report any uncaught JS error as a GoatCounter event, grouped under js-error/… */
+(function () {
+  function report(label) {
+    try {
+      var fire = function () {
+        window.goatcounter.count({
+          path:  'js-error' + location.pathname,
+          title: String(label).slice(0, 240),
+          event: true
+        });
+      };
+      if (window.goatcounter && window.goatcounter.count) return fire();
+      var n = 0, t = setInterval(function () {
+        if (window.goatcounter && window.goatcounter.count) { clearInterval(t); fire(); }
+        else if (++n > 30) clearInterval(t);
+      }, 500);
+    } catch (_) {}
+  }
+  window.addEventListener('error', function (e) {
+    report((e.message || 'error') + ' @ ' + (e.filename || '') + ':' + (e.lineno || 0));
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    var r = e.reason;
+    report('promise: ' + ((r && (r.message || r)) || 'unhandledrejection'));
+  });
+})();
+</script>
+
+</body>
+</html>
