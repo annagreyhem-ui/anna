@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Sentry error monitoring -->
+<script
+  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
+  crossorigin="anonymous"
+></script>
+<script>
+  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
+  Sentry.onLoad(function () {
+    Sentry.init({
+      release: "anna-greyhem-website@1.0.0",
+    });
+  });
+</script>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+<meta name="theme-color" content="#0a0a0c" />
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/images/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="icon" href="/assets/images/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+<title>How Cherries Die — Anna Greyhem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="../assets/fonts/fonts.css">
+<link rel="stylesheet" href="qr-base.css">
+<style>
+  /* ---------- Inline fallback: fonts + design-system tokens ----------
+     Mirrors assets/fonts/fonts.css and qr/qr-base.css so this page still
+     renders correctly if either external stylesheet fails to load. */
+  @font-face { font-family: 'Cormorant Garamond'; font-style: normal; font-weight: 300 700; font-display: swap; src: url('../assets/fonts/CormorantGaramond-VariableFont_wght.ttf') format('truetype'); }
+  @font-face { font-family: 'Cormorant Garamond'; font-style: italic; font-weight: 300 700; font-display: swap; src: url('../assets/fonts/CormorantGaramond-Italic-VariableFont_wght.ttf') format('truetype'); }
+  @font-face { font-family: 'Newsreader'; font-style: normal; font-weight: 200 800; font-display: swap; src: url('../assets/fonts/Newsreader-VariableFont.ttf') format('truetype'); }
+  @font-face { font-family: 'Newsreader'; font-style: italic; font-weight: 200 800; font-display: swap; src: url('../assets/fonts/Newsreader-Italic-VariableFont.ttf') format('truetype'); }
+  @font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 100 800; font-display: swap; src: url('../assets/fonts/JetBrainsMono-VariableFont_wght.ttf') format('truetype'); }
+  @font-face { font-family: 'JetBrains Mono'; font-style: italic; font-weight: 100 800; font-display: swap; src: url('../assets/fonts/JetBrainsMono-Italic-VariableFont_wght.ttf') format('truetype'); }
+
+  :root {
+    --ink:     #0a0a0c;
+    --bone:    #eeeae0;
+    --bone-2:  #c9c4b8;
+    --bone-3:  #8a8478;
+    --bone-4:  #2a2823;
+    --cherry:   #9e2438;
+    --cherry-2: #6b1825;
+    --cherry-3: #c33149;
+    --drowned-3:#6b8095;
+    --serif: 'Cormorant Garamond', 'EB Garamond', Garamond, serif;
+    --read:  'Newsreader', 'Cormorant Garamond', Georgia, serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --gutter: clamp(22px, 7vw, 56px);
+    --ease: cubic-bezier(.2, .7, .2, 1);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--bone);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body { font-family: var(--read); font-weight: 400; }
+  .grain {
+    position: fixed; inset: -50%; pointer-events: none; z-index: 70;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95  0 0 0 0 0.92  0 0 0 0 0.85  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.05; mix-blend-mode: overlay;
+    animation: grain 1.2s steps(6) infinite;
+  }
+  @keyframes grain {
+    0%{transform:translate(0,0)} 20%{transform:translate(-4%,2%)} 40%{transform:translate(3%,-3%)}
+    60%{transform:translate(-2%,4%)} 80%{transform:translate(4%,-2%)} 100%{transform:translate(0,0)}
+  }
+  .qr-legal .mark {
+    font-family: var(--serif); font-weight: 300; font-size: 13px;
+    letter-spacing: 0.02em; color: var(--bone-2); text-decoration: none;
+  }
+  .qr-legal .mark em { font-style: italic; }
+  .qr-legal a:not(.mark) {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--bone-3); text-decoration: none;
+    min-height: 36px; display: inline-flex; align-items: center;
+    transition: color 0.4s ease;
+  }
+  .qr-legal a:not(.mark):hover { color: var(--bone); }
+  .qr-legal a:focus-visible { outline: 1px solid var(--cherry-3); outline-offset: 3px; }
+  .qr-legal .sep { color: var(--bone-4); font-size: 10px; }
+  @media (prefers-reduced-motion: reduce) {
+    .grain { animation: none; }
+  }
+
+  /* Sized to match the original one-off comp exactly — it already fit
+     phones cleanly, so we keep those proportions rather than compress. */
+  :root { --read-immersive: 17px; }
+  @media (min-width: 640px) { :root { --read-immersive: 19px; } }
+  body {
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  .stage {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(20px, 5vh, 40px) 24px;
+  }
+
+  /* ================= POEM ================= */
+  .poem { max-width: 30ch; text-align: left; align-self: flex-start; margin-left: 4px; }
+  .poem-title-wrap { margin: 0 0 48px; }
+  .poem-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(28px, 8vw, 36px);
+    color: var(--bone);
+    margin: 0;
+    line-height: 1;
+  }
+  /* short stub rule beneath the title — same treatment as the
+     breathing-water h1::after: a partial, not-fully-drawn-through mark. */
+  .poem-title::after {
+    content: "";
+    display: block;
+    width: 56px;
+    height: 2px;
+    background: var(--cherry-3);
+    opacity: 0.85;
+    margin-top: 14px;
+  }
+  .stanza {
+    font-family: var(--read);
+    font-size: var(--read-immersive);
+    line-height: 1.65;
+    font-weight: 400;
+    color: var(--bone);
+    margin: 0 0 22px;
+  }
+  .stanza:last-child { margin-bottom: 0; }
+
+  .word { position: relative; }
+  .word.b { color: var(--cherry-3); }
+  .punct { color: var(--bone); }
+  .punct.red { color: var(--cherry-3); }
+  @media (prefers-reduced-motion: no-preference) {
+    .word.flip { animation: flip 0.9s var(--ease); }
+  }
+  @keyframes flip {
+    0%   { color: var(--cherry-3); text-shadow: 0 0 22px rgba(195,49,73,0.75); transform: scale(1.16); }
+    100% { color: var(--cherry-3); text-shadow: 0 0 0 rgba(195,49,73,0); transform: scale(1); }
+  }
+  .word { display: inline-block; }
+
+  /* Juice drop: travels from the cherry to the word that's about to turn,
+     so the eye follows it up the page instead of staying fixed on the fruit. */
+  .juice-drop {
+    position: fixed;
+    top: 0; left: 0;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--cherry-3);
+    box-shadow: 0 0 14px 4px rgba(195,49,73,0.65);
+    pointer-events: none;
+    z-index: 60;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+
+  /* ================= CHERRY + PROMPT ROW ================= */
+  .bite-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    width: 100%;
+    margin-top: -8px;
+    margin-bottom: 18px;
+    padding-left: 56px;
+  }
+
+  .orchard {
+    position: relative;
+    width: clamp(130px, 34vw, 190px);
+    height: clamp(140px, 37vw, 205px);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .orchard svg { width: 100%; height: 100%; overflow: visible; display: block; transform-origin: center; transform-box: fill-box; }
+  .poem, .orchard { transition: opacity 0.38s var(--ease); }
+  .poem.fading, .orchard.fading { opacity: 0; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .orchard svg { animation: idlePulse 2.6s ease-in-out infinite; }
+  }
+  @keyframes idlePulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.035); }
+  }
+
+  .cherry-front, .cherry-back { transition: transform 0.2s cubic-bezier(.2,.7,.3,1.3); transform-origin: center; transform-box: fill-box; cursor: pointer; }
+  .orchard:active .cherry-front, .orchard:active .cherry-back { transform: scale(0.93); }
+  /* Chrome draws a blue focus ring on the tabbable SVG groups on click — suppress it
+     and use a soft cherry glow for keyboard focus instead. */
+  .orchard:focus, .cherry-front:focus, .cherry-back:focus { outline: none; }
+  .orchard:focus-visible, .cherry-front:focus-visible, .cherry-back:focus-visible { outline: none; filter: drop-shadow(0 0 6px rgba(195,49,73,0.9)); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cherry-front.flash, .cherry-back.flash { animation: chomp 0.35s ease; }
+  }
+  @keyframes chomp {
+    0%   { transform: scale(1); }
+    35%  { transform: scale(0.88) rotate(-3deg); }
+    100% { transform: scale(1); }
+  }
+  .pit-core { transform-origin: center; transform-box: fill-box; }
+
+  .prompt {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--bone-3);
+    text-align: right;
+    min-height: 1.4em;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .prompt:not(.done) { animation: promptPulse 1.8s ease-in-out infinite; }
+  }
+  @keyframes promptPulse {
+    0%, 100% { opacity: 0.55; }
+    50%      { opacity: 1; }
+  }
+  .prompt .again {
+    color: var(--cherry-3);
+    background: none; border: 0; padding: 0;
+    font: inherit; letter-spacing: inherit; text-transform: inherit;
+    cursor: pointer;
+  }
+  .prompt .again:hover { color: var(--bone); }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+
+  /* Footer note: fixed in place, but only revealed once the reader
+     scrolls — hidden at rest, no black scrim beneath it. */
+  body::after { content: none !important; }
+  .qr-legal { position: static; left: auto; bottom: auto; transform: none; margin: 64px 0 24px; opacity: 0.5 !important; }
+</style>
+</head>
+<body data-screen-label="QR · How Cherries Die">
+
+<span class="grain" aria-hidden="true"></span>
+
+<div class="stage">
+  <div class="poem">
+    <div class="poem-title-wrap">
+      <h1 class="poem-title">How Cherries Die</h1>
+    </div>
+    <p class="stanza">
+      I hung cherries over my ears<br>
+      and listened to their sound.<br>
+      They <span class="word" data-idx="0" data-a="hummed" data-b="screamed">hummed</span><span class="punct" data-idx="0">.</span>
+    </p>
+    <p class="stanza">
+      The cherry <span class="word" data-idx="1" data-a="juice" data-b="blood">juice</span> pulsed<br>
+      through their veins<br>
+      and burst into my mouth.
+    </p>
+    <p class="stanza">
+      When the cherries<br>
+      touched my lips<br>
+      they began to <span class="word" data-idx="2" data-a="ripen" data-b="rot">ripen</span><span class="punct" data-idx="2">.</span>
+    </p>
+    <p class="stanza">
+      They <span class="word" data-idx="3" data-a="sighed" data-b="pleaded">sighed</span><br>
+      while I hungrily swallowed<br>
+      their <span class="word" data-idx="4" data-a="sweetness" data-b="poison">sweetness</span><span class="punct" data-idx="4">.</span>
+    </p>
+  </div>
+
+  <div class="bite-row">
+  <p class="prompt" id="prompt">take a bite</p>
+  <div class="orchard" id="orchard" role="button" tabindex="0" aria-label="Take a bite of the cherry">
+    <svg viewBox="0 0 220 240" aria-hidden="true">
+      <path d="M84,148 Q68,64 106,24" stroke="var(--bone-3)" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M148,132 Q140,66 110,24" stroke="var(--bone-3)" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="122" cy="21" rx="17" ry="8" fill="#4a5c42" transform="rotate(-24 122 21)"/>
+
+      <g class="cherry-back" id="cherryBack" role="button" tabindex="0" aria-label="Take a bite of the back cherry">
+        <ellipse class="pit-core" cx="82" cy="176" rx="13" ry="15" fill="#4a2018"/>
+        <g class="cherry-flesh" mask="url(#biteMaskBack)">
+          <circle cx="82" cy="176" r="44" fill="url(#cherryBackFill)"/>
+          <ellipse cx="82" cy="204" rx="12" ry="5" fill="var(--cherry-2)" opacity="0.4"/>
+          <ellipse cx="68" cy="160" rx="9" ry="6" fill="#ffffff" opacity="0.25" transform="rotate(-20 68 160)"/>
+        </g>
+      </g>
+
+      <g class="cherry-front" id="cherry" role="button" tabindex="0" aria-label="Take a bite of the front cherry">
+        <ellipse class="pit-core" cx="148" cy="160" rx="15" ry="17" fill="#4a2018"/>
+        <g class="cherry-flesh" mask="url(#biteMask)">
+          <circle cx="148" cy="160" r="50" fill="url(#cherryFrontFill)"/>
+          <ellipse cx="148" cy="192" rx="13" ry="5.5" fill="var(--cherry-2)" opacity="0.45"/>
+          <ellipse cx="130" cy="140" rx="10" ry="7" fill="#ffffff" opacity="0.3" transform="rotate(-20 130 140)"/>
+        </g>
+      </g>
+
+      <defs>
+        <radialGradient id="cherryBackFill" cx="34%" cy="28%" r="75%">
+          <stop offset="0%" stop-color="var(--cherry-3)"/>
+          <stop offset="48%" stop-color="var(--cherry)"/>
+          <stop offset="100%" stop-color="var(--cherry-2)"/>
+        </radialGradient>
+        <radialGradient id="cherryFrontFill" cx="32%" cy="26%" r="75%">
+          <stop offset="0%" stop-color="var(--cherry-3)"/>
+          <stop offset="46%" stop-color="var(--cherry)"/>
+          <stop offset="100%" stop-color="var(--cherry-2)"/>
+        </radialGradient>
+        <mask id="biteMask" maskUnits="userSpaceOnUse" x="0" y="0" width="220" height="240">
+          <rect x="0" y="0" width="220" height="240" fill="#ffffff"/>
+          <g id="biteHoles"></g>
+        </mask>
+        <mask id="biteMaskBack" maskUnits="userSpaceOnUse" x="0" y="0" width="220" height="240">
+          <rect x="0" y="0" width="220" height="240" fill="#ffffff"/>
+          <g id="biteHolesBack"></g>
+        </mask>
+      </defs>
+    </svg>
+  </div>
+  </div>
+
+  <div class="sr-only" id="live" aria-live="polite"></div>
+
+  <nav class="qr-legal" aria-label="Legal">
+    <a class="mark" href="https://annagreyhem.com/">Anna <em>Greyhem</em></a>
+    <span class="sep" aria-hidden="true">·</span>
+    <a href="https://annagreyhem.com/impressum/">Legal Notice</a>
+    <span class="sep" aria-hidden="true">·</span>
+    <a href="https://annagreyhem.com/datenschutz/">Privacy</a>
+  </nav>
+</div>
+
+<script>
+(function () {
+  var TOTAL = 5;
+  var STORAGE_KEY = 'ag-cherry-bites';
+
+  var orchard = document.getElementById('orchard');
+  var bitesGroup = document.getElementById('biteHoles');
+  var bitesGroupBack = document.getElementById('biteHolesBack');
+  var cherryBack = document.getElementById('cherryBack');
+  var cherryFront = document.getElementById('cherry');
+  var prompt = document.getElementById('prompt');
+  var live = document.getElementById('live');
+  var words = Array.prototype.slice.call(document.querySelectorAll('.word'));
+  var puncts = Array.prototype.slice.call(document.querySelectorAll('.punct'));
+
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+  var CX = 148, CY = 160; // front cherry centre
+  var CX2 = 82, CY2 = 176; // back cherry centre
+
+  // bite mark presets — radii used for each successive bite, wherever it lands
+  var bites = [
+    { r: 26 }, { r: 28 }, { r: 27 }, { r: 25 }, { r: 34 }
+  ];
+
+  var saved = (function () {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { return {}; }
+  })();
+  var holesFront = Array.isArray(saved.f) ? saved.f : [];
+  var holesBack = Array.isArray(saved.b) ? saved.b : [];
+  if (holesFront.length + holesBack.length > TOTAL) { holesFront = []; holesBack = []; }
+  function saveCounts() { localStorage.setItem(STORAGE_KEY, JSON.stringify({ f: holesFront, b: holesBack })); }
+
+  function fillHoles(group, arr) {
+    while (group.firstChild) group.removeChild(group.firstChild);
+    arr.forEach(function (p) {
+      var el = document.createElementNS(SVG_NS, 'circle');
+      el.setAttribute('cx', p.x); el.setAttribute('cy', p.y); el.setAttribute('r', p.r); el.setAttribute('fill', '#000000');
+      group.appendChild(el);
+    });
+  }
+
+  function applyBiteMarks() {
+    fillHoles(bitesGroup, holesFront);
+    fillHoles(bitesGroupBack, holesBack);
+    var n = holesFront.length + holesBack.length;
+    orchard.classList.toggle('eaten', n >= TOTAL);
+    // Force a mask repaint — some browsers don't redraw the SVG mask
+    // immediately after its referenced children mutate.
+    document.querySelectorAll('.cherry-flesh').forEach(function (flesh) {
+      var m = flesh.getAttribute('mask');
+      flesh.setAttribute('mask', 'none');
+      void flesh.getBBox();
+      flesh.setAttribute('mask', m);
+    });
+  }
+
+  var svgRoot = orchard.querySelector('svg');
+  function svgPointFromEvent(evt) {
+    var pt = svgRoot.createSVGPoint();
+    var ce = (evt.changedTouches && evt.changedTouches[0]) || evt;
+    pt.x = ce.clientX; pt.y = ce.clientY;
+    return pt.matrixTransform(svgRoot.getScreenCTM().inverse());
+  }
+
+  function applyWords(n, animateIdx) {
+    words.forEach(function (w) {
+      var idx = parseInt(w.dataset.idx, 10);
+      var flipped = idx < n;
+      w.classList.toggle('b', flipped);
+      w.textContent = flipped ? w.dataset.b : w.dataset.a;
+      if (idx === animateIdx) {
+        w.classList.remove('flip');
+        void w.offsetWidth;
+        w.classList.add('flip');
+      }
+    });
+    puncts.forEach(function (p) {
+      var idx = parseInt(p.dataset.idx, 10);
+      p.classList.toggle('red', idx < n);
+    });
+  }
+
+  var prompts = ['Take a bite.', 'Another bite.', 'One more.', 'Still hungry?'];
+
+  function updatePrompt(n) {
+    if (n >= TOTAL) {
+      prompt.innerHTML = '<button class="again" id="again">— begin again —</button>';
+      document.getElementById('again').addEventListener('click', reset);
+      prompt.classList.add('done');
+    } else {
+      prompt.textContent = prompts[Math.min(n, prompts.length - 1)];
+      prompt.classList.remove('done');
+    }
+  }
+
+  function render(n, animateIdx) {
+    applyBiteMarks();
+    applyWords(n, animateIdx);
+    updatePrompt(n);
+  }
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function spawnJuiceDrop(targetWord, onArrive) {
+    if (reduceMotion || !targetWord) { onArrive(); return; }
+    var from = orchard.getBoundingClientRect();
+    var to = targetWord.getBoundingClientRect();
+    var drop = document.createElement('span');
+    drop.className = 'juice-drop';
+    document.body.appendChild(drop);
+    var startX = from.left + from.width * 0.4;
+    var startY = from.top + from.height * 0.35;
+    var endX = to.left + to.width / 2;
+    var endY = to.top + to.height / 2;
+    var midX = (startX + endX) / 2 - 40;
+    var midY = Math.min(startY, endY) - 30;
+    var anim = drop.animate([
+      { transform: 'translate(' + startX + 'px,' + startY + 'px) scale(0.6)', opacity: 0, offset: 0 },
+      { transform: 'translate(' + startX + 'px,' + startY + 'px) scale(1)', opacity: 1, offset: 0.08 },
+      { transform: 'translate(' + midX + 'px,' + midY + 'px) scale(0.9)', opacity: 1, offset: 0.7 },
+      { transform: 'translate(' + endX + 'px,' + endY + 'px) scale(1.3)', opacity: 1, offset: 1 }
+    ], { duration: 1400, easing: 'cubic-bezier(.2,.7,.2,1)' });
+    anim.onfinish = function () {
+      onArrive();
+      var fade = drop.animate([
+        { opacity: 1, transform: 'translate(' + endX + 'px,' + endY + 'px) scale(1.3)' },
+        { opacity: 0, transform: 'translate(' + endX + 'px,' + endY + 'px) scale(0.4)' }
+      ], { duration: 220, easing: 'ease-out' });
+      fade.onfinish = function () { drop.remove(); };
+    };
+  }
+
+  function bite(which, x, y) {
+    var total = holesFront.length + holesBack.length;
+    if (total >= TOTAL) return;
+    var idx = total;
+    var r = bites[idx % bites.length].r;
+    var cx = which === 'front' ? CX : CX2, cy = which === 'front' ? CY : CY2, R = which === 'front' ? 50 : 44;
+    var dx = x - cx, dy = y - cy;
+    var dist = Math.hypot(dx, dy) || 1;
+    var angle = Math.atan2(dy, dx);
+    var arr = which === 'front' ? holesFront : holesBack;
+    var angWidth = r / R;
+    var adjacent = arr.some(function (h) {
+      var ha = Math.atan2(h.y - cy, h.x - cx);
+      var hWidth = h.r / R;
+      var diff = Math.abs(Math.atan2(Math.sin(angle - ha), Math.cos(angle - ha)));
+      return diff < (hWidth + angWidth) * 1.3;
+    });
+    var ex, ey;
+    if (adjacent) { var d = Math.min(dist, R); ex = cx + Math.cos(angle) * d; ey = cy + Math.sin(angle) * d; }
+    else { ex = cx + Math.cos(angle) * R; ey = cy + Math.sin(angle) * R; }
+    arr.push({ x: ex, y: ey, r: r });
+    saveCounts();
+    var el = which === 'front' ? cherryFront : cherryBack;
+    applyBiteMarks();
+    updatePrompt(holesFront.length + holesBack.length);
+    el.classList.remove('flash');
+    void el.getBBox();
+    el.classList.add('flash');
+    var w = words[idx];
+    spawnJuiceDrop(w, function () { applyWords(holesFront.length + holesBack.length, idx); });
+    live.textContent = w ? (w.dataset.a + ' becomes ' + w.dataset.b) : '';
+    if (holesFront.length + holesBack.length >= TOTAL) live.textContent += ' — the cherries are gone.';
+  }
+
+  function reset() {
+    if (reduceMotion) {
+      holesFront = []; holesBack = [];
+      saveCounts();
+      render(0, -1);
+      live.textContent = 'the poem begins again.';
+      return;
+    }
+    document.querySelector('.poem').classList.add('fading');
+    orchard.classList.add('fading');
+    setTimeout(function () {
+      holesFront = []; holesBack = [];
+      saveCounts();
+      render(0, -1);
+      live.textContent = 'the poem begins again.';
+      document.querySelector('.poem').classList.remove('fading');
+      orchard.classList.remove('fading');
+    }, 380);
+  }
+
+  function bindCherry(el, which, cx, cy) {
+    el.addEventListener('click', function (e) { var p = svgPointFromEvent(e); bite(which, p.x, p.y); });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        var a = Math.random() * Math.PI * 2;
+        bite(which, cx + Math.cos(a) * 60, cy + Math.sin(a) * 60);
+      }
+    });
+  }
+  bindCherry(cherryFront, 'front', CX, CY);
+  bindCherry(cherryBack, 'back', CX2, CY2);
+
+  render(holesFront.length + holesBack.length, -1);
+})();
+</script>
+
+<!-- ═══════════ GoatCounter — page views + JS-error events ═══════════ -->
+<script data-goatcounter="https://annagreyhem.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+/* Report any uncaught JS error as a GoatCounter event, grouped under js-error/… */
+(function () {
+  function report(label) {
+    try {
+      var fire = function () {
+        window.goatcounter.count({
+          path:  'js-error' + location.pathname,
+          title: String(label).slice(0, 240),
+          event: true
+        });
+      };
+      if (window.goatcounter && window.goatcounter.count) return fire();
+      var n = 0, t = setInterval(function () {
+        if (window.goatcounter && window.goatcounter.count) { clearInterval(t); fire(); }
+        else if (++n > 30) clearInterval(t);
+      }, 500);
+    } catch (_) {}
+  }
+  window.addEventListener('error', function (e) {
+    report((e.message || 'error') + ' @ ' + (e.filename || '') + ':' + (e.lineno || 0));
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    var r = e.reason;
+    report('promise: ' + ((r && (r.message || r)) || 'unhandledrejection'));
+  });
+})();
+</script>
+
+</body>
+</html>
