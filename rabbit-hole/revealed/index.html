@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="de">
+<head>
+
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous"></script>
+<script>
+  Sentry.onLoad(function () {
+    Sentry.init({ release: "anna-greyhem-website@1.0.0" });
+  });
+</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0a0c" />
+<link rel="icon" href="/favicon.ico" sizes="any">
+<title>Anna Greyhem</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<script src="../../assets/js/qr-viewport-fix.js"></script>
+<script>
+/* Preview-only safety net: some preview servers don't tokenise relative asset
+   links, blocking the shared stylesheet and desk images. If tokens are missing,
+   re-link/re-source them with the current auth token. In production this is a no-op. */
+(function(){
+  var t = (location.search.match(/[?&]t=([^&]+)/) || [])[1];
+  if (!t) return;
+  var base = location.href.split('/rabbit-hole/')[0] + '/';
+  function fixCSS(){
+    if (getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()) return;
+    var l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = base + 'assets/fonts/fonts.css?t=' + t; document.head.appendChild(l);
+  }
+  function fixImg(img){
+    img.addEventListener('error', function retry(){
+      img.removeEventListener('error', retry);
+      img.src = base + img.getAttribute('data-src') + '?t=' + t;
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    fixCSS();
+    document.querySelectorAll('img[data-src]').forEach(fixImg);
+  });
+})();
+</script>
+<style>
+:root{--ink:#0a0a0c;--bone:#eeeae0;--bone-2:#c9c4b8;--bone-3:#8a8478;--bone-4:#2a2823;--serif:'Cormorant Garamond','EB Garamond',Garamond,serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--bone);height:100%;overflow:hidden}
+*{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+button{-webkit-tap-highlight-color:transparent}
+button{outline:none}
+button:focus-visible{outline:1px solid var(--bone-3);outline-offset:2px}
+body{font-family:var(--serif);display:flex;align-items:center;justify-content:center;text-align:center}
+.stage{position:relative;width:100vw;height:100vh;max-width:calc(100vh * 941 / 1672);max-height:calc(100vw * 1672 / 941);margin:auto;overflow:hidden}
+@supports (height:100dvh){.stage{height:100dvh;max-width:calc(100dvh * 941 / 1672);max-height:calc(100vw * 1672 / 941)}}
+.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 1.1s ease}
+.stage img.dark{opacity:1}
+.stage img.lit{opacity:0}
+.stage.lit-on img.dark{opacity:0}
+.stage.lit-on img.lit{opacity:1}
+.hotspot{position:absolute;cursor:pointer;background:none;border:0;padding:0}
+.hotspot.off,.hotspot.on{left:3%;top:44%;width:17%;height:6%}
+.hint{position:absolute;left:24%;top:42.5%;text-align:left;font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(20px,5vmin,32px);letter-spacing:.01em;color:var(--bone-2);line-height:1.45;pointer-events:none;white-space:nowrap}
+.hint span{display:block;opacity:0;transition:opacity .8s ease}
+.hint span.show{opacity:1}
+.tap-point{position:absolute;left:11.5%;top:47%;width:26px;height:26px;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid var(--bone-3);background:rgba(238,234,224,.12);opacity:0;transition:opacity .8s ease;pointer-events:none}
+.tap-point.show{opacity:1;animation:tap-pulse 1.8s ease-in-out infinite}
+.dot{position:absolute;width:18px;height:18px;transform:translate(-50%,-50%);border-radius:50%;border:1.5px solid var(--bone-2);background:rgba(238,234,224,.22);box-shadow:0 0 12px 3px rgba(10,10,12,.55);opacity:0;transition:opacity 1.2s ease;pointer-events:none;z-index:4}
+.dot.show{opacity:1;animation:dot-pulse 2.4s ease-in-out infinite}
+@keyframes dot-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.9}50%{transform:translate(-50%,-50%) scale(1.45);opacity:.4}}
+/* Debug view (Shift+H, or ?hotspots=1): paint the click rectangles. */
+body[data-debug-hotspots="true"] .hotspot{background:rgba(200,80,80,.22);outline:1px solid rgba(255,140,140,.7)}
+body[data-debug-hotspots="true"] .dot{opacity:.9}
+@keyframes tap-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1}50%{transform:translate(-50%,-50%) scale(1.7);opacity:.3}}
+.hotspot.phone{left:54.5%;top:57.5%;width:14%;height:7%}
+.hotspot.plant{left:20%;top:30%;width:14%;height:20%}
+.hotspot.manuscript{left:74%;top:50%;width:24%;height:12%}
+.hotspot.notes{left:69.6%;top:5.7%;width:23.9%;height:26.9%}
+.hotspot.laptop{left:34%;top:38%;width:36%;height:20%}
+.hotspot.notebook{left:29%;top:61%;width:26%;height:13%}
+.hotspot.cherries-direct{left:40.4%;top:20%;width:22.3%;height:12.6%}
+.hotspot.illustrations{left:39%;top:8.4%;width:28.4%;height:8.2%}
+.hotspot.newspaper{left:55%;top:65%;width:44%;height:19%}
+.hotspot.newspaper-gap{left:68.5%;top:62%;width:30.5%;height:3%}
+.hotspot.tape{left:3%;top:50%;width:26%;height:9%}
+.hotspot.polaroids{left:1%;top:59%;width:26%;height:15%}
+.phone-overlay{position:absolute;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;z-index:5}
+.phone-overlay.show{opacity:1;pointer-events:auto}
+.phone-frame{position:relative;height:88%;aspect-ratio:941/1672}
+.phone-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.spotify-wrap{position:absolute;left:25.5%;top:17.25%;width:49.5%;height:60%;overflow:hidden;border-radius:8px;background:#000}
+.spotify-wrap-inner{position:absolute;left:0;top:0;transform-origin:top left}
+.spotify-wrap iframe{display:block;width:100%;height:100%;border:0;color-scheme:dark;background:#000}
+.spotify-loading{position:absolute;inset:0;z-index:2;background:#000;display:flex;align-items:center;justify-content:center;gap:6px;pointer-events:none;transition:opacity .5s ease}
+.spotify-loading.done{opacity:0}
+.spotify-loading i{width:4px;height:4px;border-radius:50%;background:var(--bone-3);animation:sp-load 1.2s ease-in-out infinite}
+.spotify-loading i:nth-child(2){animation-delay:.15s}
+.spotify-loading i:nth-child(3){animation-delay:.3s}
+@keyframes sp-load{0%,100%{opacity:.2}50%{opacity:.9}}
+.spotify-consent{position:absolute;inset:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#000;border:0;color:var(--bone);cursor:pointer;text-align:center;padding:16px;font-family:var(--mono, inherit)}
+.spotify-consent-icon{width:34px;height:34px;border-radius:50%;background:var(--bone);color:#000;display:flex;align-items:center;justify-content:center;font-size:12px}
+.spotify-consent-label{font-size:12px;letter-spacing:.02em}
+.spotify-consent-note{font-size:9px;opacity:.55;max-width:220px;line-height:1.4}
+.spotify-consent:hover .spotify-consent-icon{background:#fff}
+.phone-close{position:absolute;top:16px;left:16px;background:none;border:0;color:var(--bone);font-size:22px;line-height:1;cursor:pointer;opacity:.7;padding:8px;z-index:20}
+.phone-close:hover{opacity:1}
+.plant-overlay{position:absolute;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;z-index:5}
+.plant-overlay.show{opacity:1;pointer-events:auto}
+.plant-frame{position:relative;height:88%;aspect-ratio:941/1672}
+.plant-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:4px}
+.plant-frame img.alive{opacity:0;transition:opacity 1.1s ease;cursor:pointer;pointer-events:none}
+.plant-frame img.alive.show{pointer-events:auto}
+.plant-frame img.alive.show{opacity:1}
+.plant-frame img.dried{cursor:pointer;transition:opacity 1.1s ease}
+.plant-close{position:absolute;top:16px;left:16px;background:none;border:0;color:var(--bone);font-size:22px;line-height:1;cursor:pointer;opacity:.7;padding:8px;z-index:2}
+.plant-close:hover{opacity:1}
+.manuscript-overlay{position:absolute;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;z-index:5}
+.manuscript-overlay.show{opacity:1;pointer-events:auto}
+.manuscript-frame{position:relative;height:88%;aspect-ratio:941/1672;cursor:pointer}
+.manuscript-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:4px;opacity:0;transition:opacity .5s ease}
+.manuscript-frame img.active{opacity:1}
+.manuscript-close{position:absolute;top:16px;left:16px;background:none;border:0;color:var(--bone);font-size:22px;line-height:1;cursor:pointer;opacity:.7;padding:8px;z-index:2}
+.manuscript-close:hover{opacity:1}
+@media (min-width:900px){.manuscript-overlay{align-items:flex-start;overflow-y:auto;overflow-x:hidden}.manuscript-frame{height:auto;width:min(34vw,440px);aspect-ratio:941/1672;flex-shrink:0;margin:2vh 0}}
+.notes-overlay{position:absolute;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;z-index:5}
+.notes-overlay.show{opacity:1;pointer-events:auto}
+.notes-frame{position:relative;height:88%;aspect-ratio:941/1672}
+.notes-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:4px}
+.notes-close{position:absolute;top:16px;left:16px;background:none;border:0;color:var(--bone);font-size:22px;line-height:1;cursor:pointer;opacity:.7;padding:8px;z-index:2}
+.notes-close:hover{opacity:1}
+.laptop-overlay{position:absolute;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;z-index:5}
+.laptop-overlay.show{opacity:1;pointer-events:auto}
+.laptop-frame{position:relative;height:120%;aspect-ratio:1448/1086}
+.laptop-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:4px}
+.laptop-screen{position:absolute;left:19.3%;top:10.6%;width:61.8%;height:52%;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+.laptop-screen-inner{width:900px;height:568px;flex-shrink:0}
+.laptop-screen-inner iframe{width:100%;height:100%;border:0}
+.laptop-close{position:absolute;top:calc(16px + env(safe-area-inset-top));left:calc(16px + env(safe-area-inset-left));background:rgba(0,0,0,.45);border-radius:999px;border:0;color:var(--bone);font-size:22px;line-height:1;cursor:pointer;opacity:.7;padding:10px 14px;z-index:20}
+.laptop-close:hover{opacity:1}
+.notebook-overlay{position:absolute;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;z-index:5}
+.notebook-overlay.show{opacity:1;pointer-events:auto}
+.notebook-frame{position:relative;height:88%;aspect-ratio:941/1672;cursor:pointer}
+.notebook-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:4px;transition:opacity .6s ease}
+.notebook-frame img.open{opacity:0}
+.notebook-frame.is-open img.closed{opacity:0}
+.notebook-frame.is-open img.open{opacity:1}
+.notebook-frame.is-open .advance-hint{opacity:0}
+.notebook-close{position:absolute;top:16px;left:16px;background:none;border:0;color:var(--bone);font-size:22px;line-height:1;cursor:pointer;opacity:.7;padding:8px;z-index:2}
+.notebook-close:hover{opacity:1}
+.advance-hint{position:absolute;right:4%;top:50%;transform:translateY(-50%);color:var(--bone);font-size:28px;line-height:1;opacity:.7;pointer-events:none;z-index:3;transition:opacity .9s ease}
+#notebookHint{opacity:0}
+#notebookHint.show{opacity:.7}
+.newspaper-overlay{position:absolute;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;z-index:5}
+.newspaper-overlay.show{opacity:1;pointer-events:auto}
+.newspaper-frame{position:relative;height:88%;aspect-ratio:941/1672}
+.newspaper-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:4px}
+.gallery-overlay{position:absolute;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;z-index:6}
+.gallery-overlay.show{opacity:1;pointer-events:auto}
+.gallery-frame{position:relative;height:88%;aspect-ratio:3/4;max-width:92%}
+.gallery-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:4px;opacity:0;transition:opacity .35s ease}
+.gallery-frame img.active{opacity:1}
+.gallery-close{position:absolute;top:16px;left:16px;background:none;border:0;color:var(--bone);font-size:22px;line-height:1;cursor:pointer;opacity:.7;padding:8px;z-index:2}
+.gallery-close:hover{opacity:1}
+#illustrationsOverlay .gallery-close{color:var(--bone-4)}
+.gallery-nav{position:absolute;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--bone-4);font-size:28px;line-height:1;cursor:pointer;opacity:.9;padding:12px;z-index:2}
+.gallery-nav:hover{opacity:1}
+.gallery-prev{left:-8px}
+.gallery-next{right:-8px}
+.gallery-count{position:absolute;bottom:-32px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--bone-3)}
+.newspaper-close{position:absolute;top:16px;left:16px;background:none;border:0;color:var(--bone);font-size:22px;line-height:1;cursor:pointer;opacity:.7;padding:8px;z-index:2}
+.newspaper-close:hover{opacity:1}
+.tape-overlay{position:absolute;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;z-index:5}
+.tape-overlay.show{opacity:1;pointer-events:auto}
+.tape-frame{position:relative;height:88%;aspect-ratio:941/1672}
+.tape-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:4px}
+.tape-frame img.playing{opacity:0}
+.tape-play{position:absolute;left:50.8%;top:69.4%;width:8.9%;height:6.6%;cursor:pointer;background:none;border:0;padding:0}
+.tape-frame.is-playing img.idle{opacity:0}
+.tape-frame.is-playing img.playing{opacity:1}
+.tape-close{position:absolute;top:16px;left:16px;background:none;border:0;color:var(--bone);font-size:22px;line-height:1;cursor:pointer;opacity:.7;padding:8px;z-index:2}
+.tape-close:hover{opacity:1}
+.polaroids-overlay{position:absolute;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;z-index:5}
+.polaroids-overlay.show{opacity:1;pointer-events:auto}
+.polaroids-frame{position:relative;height:88%;aspect-ratio:941/1672;cursor:pointer}
+.polaroids-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:4px;transition:opacity 5s ease}
+.polaroids-frame img.developed{opacity:0}
+.polaroids-frame.is-developed img.blank{opacity:0}
+.polaroids-frame.is-developed img.developed{opacity:1}
+.polaroids-close{position:absolute;top:16px;left:16px;background:none;border:0;color:var(--bone);font-size:22px;line-height:1;cursor:pointer;opacity:.7;padding:8px;z-index:2}
+.polaroids-close:hover{opacity:1}
+.qr-legal{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom) + var(--qr-toolbar-gap, 0px));transform:translateX(-50%);z-index:80;display:inline-flex;align-items:center;gap:12px;white-space:nowrap;opacity:0.5;transition:opacity .7s ease}
+.qr-legal:hover,.qr-legal:focus-within,.qr-legal[data-near="true"]{opacity:1}
+.qr-legal .mark{font-family:var(--serif);font-weight:300;font-size:13px;letter-spacing:.02em;color:var(--bone-2);text-decoration:none}
+.qr-legal .mark em{font-style:italic}
+.qr-legal a:not(.mark){font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-3);text-decoration:none;min-height:36px;display:inline-flex;align-items:center;transition:color .4s ease}
+.qr-legal a:not(.mark):hover{color:var(--bone)}
+.qr-legal .sep{color:var(--bone-4);font-size:10px}
+body::after{content:"";position:fixed;left:0;right:0;bottom:calc(-20px + var(--qr-toolbar-gap, 0px));height:170px;background:linear-gradient(to top,var(--ink) 20%,rgba(10,10,12,.75) 45%,transparent 100%);pointer-events:none;z-index:75}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+<img class="dark" src="https://cdn.annagreyhem.com/rabbit-hole/desk-dark.png" onerror="this.onerror=null;this.src='../../assets/images/desk/desk-dark.png'" alt="a dark room, only a lamp switch visible" />
+<img class="lit" src="https://cdn.annagreyhem.com/rabbit-hole/desk-lit.png" onerror="this.onerror=null;this.src='../../assets/images/desk/desk-lit.png'" alt="a desk lit by a lamp, with a laptop, notebook, newspaper and dried flowers" />
+<div class="tap-point" id="tapPoint"></div>
+<button class="hotspot off" id="hotOff" aria-label="Lampe einschalten"></button>
+<button class="hotspot on" id="hotOn" aria-label="Lampe ausschalten" style="display:none"></button>
+<div class="hint" id="hint"><span id="hint1">I can't see.</span><span id="hint2">It's too dark in here.</span></div>
+<button class="hotspot phone" id="hotPhone" aria-label="Handy öffnen" style="display:none"></button>
+<button class="hotspot plant" id="hotPlant" aria-label="Blumen betrachten" style="display:none"></button>
+<button class="hotspot manuscript" id="hotManuscript" aria-label="Manuskript betrachten" style="display:none"></button>
+<button class="hotspot notes" id="hotNotes" aria-label="Notizzettel betrachten" style="display:none"></button>
+<button class="hotspot cherries-direct" id="hotCherriesDirect" aria-label="Kirschfotos betrachten" style="display:none"></button>
+<button class="hotspot illustrations" id="hotIllustrations" aria-label="Illustrationen betrachten" style="display:none"></button>
+<button class="hotspot laptop" id="hotLaptop" aria-label="Laptop betrachten" style="display:none"></button>
+<button class="hotspot notebook" id="hotNotebook" aria-label="Notizbuch betrachten" style="display:none"></button>
+<button class="hotspot newspaper" id="hotNewspaper" aria-label="Zeitung betrachten" style="display:none"></button>
+<button class="hotspot newspaper-gap no-dot" id="hotNewspaperGap" aria-label="Zeitung betrachten" style="display:none"></button>
+<button class="hotspot tape" id="hotTape" aria-label="Kassettenrekorder betrachten" style="display:none"></button>
+<button class="hotspot polaroids" id="hotPolaroids" aria-label="Polaroids betrachten" style="display:none"></button>
+<div class="dots" id="dots" aria-hidden="true"></div>
+</div>
+<div class="plant-overlay" id="plantOverlay">
+<div class="plant-frame">
+<button class="plant-close" id="plantClose" aria-label="Back">←</button>
+<img class="dried" src="https://cdn.annagreyhem.com/rabbit-hole/plant-closeup.png" onerror="this.onerror=null;this.src='../../assets/images/desk/plant-closeup.png'" alt="getrocknete Blumen in einer Glasvase, Nahaufnahme" />
+<img class="alive" id="plantAlive" src="https://cdn.annagreyhem.com/rabbit-hole/plant-alive.png" onerror="this.onerror=null;this.src='../../assets/images/desk/plant-alive.png'" alt="die gleiche Vase mit frischen Blumen, Nahaufnahme" />
+</div>
+</div>
+<div class="phone-overlay" id="phoneOverlay">
+<div class="phone-frame">
+<button class="phone-close" id="phoneClose" aria-label="Back">←</button>
+<img src="https://cdn.annagreyhem.com/rabbit-hole/phone-closeup.jpg" onerror="this.onerror=null;this.src='../../assets/images/desk/phone-closeup.jpg'" alt="iPhone Nahaufnahme" />
+<div class="spotify-wrap" id="spotifyWrap" data-loaded="false"><button class="spotify-consent" id="spotifyConsent" type="button"><span class="spotify-consent-icon">&#9654;</span><span class="spotify-consent-label">Load Spotify player</span><span class="spotify-consent-note">Connects to Spotify’s servers and may set cookies.</span></button></div>
+</div>
+</div>
+<div class="manuscript-overlay" id="manuscriptOverlay">
+<div class="manuscript-frame" id="manuscriptFrame">
+<button class="manuscript-close" id="manuscriptClose" aria-label="Back">←</button>
+<img class="active" data-i="0" src="https://cdn.annagreyhem.com/rabbit-hole/manuscript-closeup.png" onerror="this.onerror=null;this.src='../../assets/images/desk/manuscript-closeup.png'" alt="Manuskript 'How Life Feels...' von Anna Greyhem, Notizzettel 'ready to publish'" />
+<img data-i="1" src="https://cdn.annagreyhem.com/rabbit-hole/manuscript-page-2.png" onerror="this.onerror=null;this.src='../../assets/images/desk/manuscript-page-2.png'" alt="aufgeschlagene Manuskriptseite: 'This is not a novel...'" />
+<img data-i="2" src="https://cdn.annagreyhem.com/rabbit-hole/manuscript-page-3.png" onerror="this.onerror=null;this.src='../../assets/images/desk/manuscript-page-3.png'" alt="Manuskriptseite mit dem Wort 'BECOMING'" />
+<img data-i="3" src="https://cdn.annagreyhem.com/rabbit-hole/manuscript-page-4.png" onerror="this.onerror=null;this.src='../../assets/images/desk/manuscript-page-4.png'" alt="Manuskriptseite mit dem Gedicht 'Becoming'" />
+<img data-i="4" src="https://cdn.annagreyhem.com/rabbit-hole/manuscript-page-5.png" onerror="this.onerror=null;this.src='../../assets/images/desk/manuscript-page-5.png'" alt="Manuskriptseite mit dem Gedicht 'Assembling Myself', Teil 1" />
+<img data-i="5" src="https://cdn.annagreyhem.com/rabbit-hole/manuscript-page-6.png" onerror="this.onerror=null;this.src='../../assets/images/desk/manuscript-page-6.png'" alt="Manuskriptseite mit dem Gedicht 'Assembling Myself', Teil 2" />
+<img data-i="6" src="https://cdn.annagreyhem.com/rabbit-hole/manuscript-page-7.png" onerror="this.onerror=null;this.src='../../assets/images/desk/manuscript-page-7.png'" alt="Manuskriptseite: 'This is the first time I look at me without judgment.'" />
+<img data-i="7" src="https://cdn.annagreyhem.com/rabbit-hole/manuscript-page-8.png" onerror="this.onerror=null;this.src='../../assets/images/desk/manuscript-page-8.png'" alt="Manuskriptseite: 'I spent my whole life becoming...'" />
+<img data-i="8" src="https://cdn.annagreyhem.com/rabbit-hole/manuscript-page-9.png" onerror="this.onerror=null;this.src='../../assets/images/desk/manuscript-page-9.png'" alt="Manuskriptseite mit dem Gedicht 'I Want to be Raw'" />
+<div class="advance-hint" id="manuscriptHint">›</div>
+</div>
+</div>
+<div class="notes-overlay" id="notesOverlay">
+<div class="notes-frame">
+<button class="notes-close" id="notesClose" aria-label="Back">←</button>
+<img src="https://cdn.annagreyhem.com/rabbit-hole/notes-closeup.png" onerror="this.onerror=null;this.src='../../assets/images/desk/notes-closeup.png'" alt="handgeschriebene Notizzettel am Pinnbrett" />
+</div>
+</div>
+<div class="gallery-overlay" id="galleryOverlay">
+<div class="gallery-frame">
+<button class="gallery-close" id="galleryClose" aria-label="Back">←</button>
+<button class="gallery-nav gallery-prev" id="galleryPrev" aria-label="Vorheriges Bild">‹</button>
+<img class="active" data-i="0" src="https://cdn.annagreyhem.com/rabbit-hole/cherry-1.jpg" onerror="this.onerror=null;this.src='../../assets/images/desk/cherry-1.jpg'" alt="Kirschfoto 1" />
+<img data-i="1" src="https://cdn.annagreyhem.com/rabbit-hole/cherry-2.jpg" onerror="this.onerror=null;this.src='../../assets/images/desk/cherry-2.jpg'" alt="Kirschfoto 2" />
+<img data-i="2" src="https://cdn.annagreyhem.com/rabbit-hole/cherry-3.jpg" onerror="this.onerror=null;this.src='../../assets/images/desk/cherry-3.jpg'" alt="Kirschfoto 3" />
+<img data-i="3" src="https://cdn.annagreyhem.com/rabbit-hole/cherry-4.jpg" onerror="this.onerror=null;this.src='../../assets/images/desk/cherry-4.jpg'" alt="Kirschfoto 4" />
+<button class="gallery-nav gallery-next" id="galleryNext" aria-label="Nächstes Bild">›</button>
+<div class="gallery-count" id="galleryCount">1 / 4</div>
+</div>
+</div>
+<div class="gallery-overlay" id="illustrationsOverlay">
+<div class="gallery-frame">
+<button class="gallery-close" id="illustrationsClose" aria-label="Back">←</button>
+<button class="gallery-nav gallery-prev" id="illustrationsPrev" aria-label="Vorheriges Bild">‹</button>
+<img class="active" data-i="0" src="https://cdn.annagreyhem.com/rabbit-hole/illustration-1.jpg" onerror="this.onerror=null;this.src='../../assets/images/desk/illustration-1.jpg'" alt="Illustration: Raupe auf einem Zweig" />
+<img data-i="1" src="https://cdn.annagreyhem.com/rabbit-hole/illustration-2.jpg" onerror="this.onerror=null;this.src='../../assets/images/desk/illustration-2.jpg'" alt="Illustration: Kokon an einem Zweig" />
+<img data-i="2" src="https://cdn.annagreyhem.com/rabbit-hole/illustration-3.jpg" onerror="this.onerror=null;this.src='../../assets/images/desk/illustration-3.jpg'" alt="Illustration: Schlüpfen aus dem Kokon" />
+<button class="gallery-nav gallery-next" id="illustrationsNext" aria-label="Nächstes Bild">›</button>
+<div class="gallery-count" id="illustrationsCount">1 / 3</div>
+</div>
+</div>
+<div class="laptop-overlay" id="laptopOverlay">
+<button class="laptop-close" id="laptopClose" aria-label="Back">←</button>
+<div class="laptop-frame">
+<img src="https://cdn.annagreyhem.com/rabbit-hole/laptop-closeup.png" onerror="this.onerror=null;this.src='../../assets/images/desk/laptop-closeup.png'" alt="MacBook Pro Nahaufnahme, Bildschirm mit Gedicht 'How Cherries Die'" />
+<div class="laptop-screen"><div class="laptop-screen-inner" id="laptopScreenInner"><iframe src="../../qr/how-cherries-die-2.html" loading="lazy" title="How Cherries Die"></iframe></div></div>
+</div>
+</div>
+<div class="notebook-overlay" id="notebookOverlay">
+<div class="notebook-frame" id="notebookFrame">
+<button class="notebook-close" id="notebookClose" aria-label="Back">←</button>
+<img class="closed" src="https://cdn.annagreyhem.com/rabbit-hole/notebook-closed.png" onerror="this.onerror=null;this.src='../../assets/images/desk/notebook-closed.png'" alt="geschlossenes Notizbuch 'NOTES A. Greyhem'" />
+<img class="open" src="https://cdn.annagreyhem.com/rabbit-hole/notebook-open.png" onerror="this.onerror=null;this.src='../../assets/images/desk/notebook-open.png'" alt="aufgeschlagenes Notizbuch mit handgeschriebenem Text" />
+<div class="advance-hint" id="notebookHint">›</div>
+</div>
+</div>
+<div class="newspaper-overlay" id="newspaperOverlay">
+<div class="newspaper-frame">
+<button class="newspaper-close" id="newspaperClose" aria-label="Back">←</button>
+<img src="https://cdn.annagreyhem.com/rabbit-hole/newspaper-closeup.png" onerror="this.onerror=null;this.src='../../assets/images/desk/newspaper-closeup.png'" alt="Zeitung 'The Hollow Observer' Nahaufnahme" />
+</div>
+</div>
+<div class="tape-overlay" id="tapeOverlay">
+<div class="tape-frame" id="tapeFrame">
+<button class="tape-close" id="tapeClose" aria-label="Back">←</button>
+<img class="idle" src="https://cdn.annagreyhem.com/rabbit-hole/tape-idle.png" onerror="this.onerror=null;this.src='../../assets/images/desk/tape-idle.png'" alt="Kassettenrekorder, Play nicht gedrückt" />
+<img class="playing" src="https://cdn.annagreyhem.com/rabbit-hole/tape-playing.png" onerror="this.onerror=null;this.src='../../assets/images/desk/tape-playing.png'" alt="Kassettenrekorder, Play gedrückt" />
+<button class="tape-play" id="tapePlay" aria-label="Play/Pause"></button>
+</div>
+</div>
+<audio id="silentUnlock" playsinline preload="auto" src="../../assets/audio/silence.wav"></audio>
+
+<div class="polaroids-overlay" id="polaroidsOverlay">
+<div class="polaroids-frame" id="polaroidsFrame">
+<button class="polaroids-close" id="polaroidsClose" aria-label="Back">←</button>
+<img class="blank" src="https://cdn.annagreyhem.com/rabbit-hole/polaroids-blank.png" onerror="this.onerror=null;this.src='../../assets/images/desk/polaroids-blank.png'" alt="drei unbelichtete Polaroids" />
+<img class="developed" src="https://cdn.annagreyhem.com/rabbit-hole/polaroids-developed.jpg" onerror="this.onerror=null;this.src='../../assets/images/desk/polaroids-developed.jpg'" alt="drei entwickelte Polaroids aus Paris" />
+</div>
+</div>
+<nav class="qr-legal" aria-label="Legal">
+<a class="mark" href="/">Anna <em>Greyhem</em></a>
+<span class="sep" aria-hidden="true">·</span>
+<a href="/impressum/">Legal Notice</a>
+<span class="sep" aria-hidden="true">·</span>
+<a href="/datenschutz/">Privacy</a>
+<span class="sep" aria-hidden="true">·</span>
+<a href="/ai-info/">AI Info</a>
+</nav>
+<script>
+var stage = document.getElementById('stage');
+var hint = document.getElementById('hint');
+var hotOff = document.getElementById('hotOff');
+var hotOn = document.getElementById('hotOn');
+var hint1 = document.getElementById('hint1');
+var hint2 = document.getElementById('hint2');
+var tapPoint = document.getElementById('tapPoint');
+var hintTimer = setTimeout(function(){ hint1.classList.add('show'); }, 300);
+var hintTimer2 = setTimeout(function(){ hint2.classList.add('show'); }, 1100);
+var tapTimer = setTimeout(function(){ tapPoint.classList.add('show'); }, 2400);
+
+var hotPhone = document.getElementById('hotPhone');
+var phoneOverlay = document.getElementById('phoneOverlay');
+var phoneClose = document.getElementById('phoneClose');
+var hotPlant = document.getElementById('hotPlant');
+var plantOverlay = document.getElementById('plantOverlay');
+var plantClose = document.getElementById('plantClose');
+var hotManuscript = document.getElementById('hotManuscript');
+var manuscriptOverlay = document.getElementById('manuscriptOverlay');
+var manuscriptClose = document.getElementById('manuscriptClose');
+var manuscriptFrame = document.getElementById('manuscriptFrame');
+var manuscriptPages = document.querySelectorAll('.manuscript-frame img');
+var manuscriptIdx = 0;
+var hotNotes = document.getElementById('hotNotes');
+var notesOverlay = document.getElementById('notesOverlay');
+var notesClose = document.getElementById('notesClose');
+var hotCherriesDirect = document.getElementById('hotCherriesDirect');
+var galleryOverlay = document.getElementById('galleryOverlay');
+var galleryClose = document.getElementById('galleryClose');
+var galleryPrev = document.getElementById('galleryPrev');
+var galleryNext = document.getElementById('galleryNext');
+var galleryImgs = document.querySelectorAll('#galleryOverlay .gallery-frame img');
+var galleryCount = document.getElementById('galleryCount');
+var galleryIdx = 0;
+function showGalleryImg(i){
+  galleryIdx = (i + galleryImgs.length) % galleryImgs.length;
+  galleryImgs.forEach(function(img){ img.classList.toggle('active', +img.dataset.i === galleryIdx); });
+  galleryCount.textContent = (galleryIdx + 1) + ' / ' + galleryImgs.length;
+}
+var hotLaptop = document.getElementById('hotLaptop');
+var laptopOverlay = document.getElementById('laptopOverlay');
+var laptopClose = document.getElementById('laptopClose');
+var hotNotebook = document.getElementById('hotNotebook');
+var notebookOverlay = document.getElementById('notebookOverlay');
+var notebookClose = document.getElementById('notebookClose');
+var notebookFrame = document.getElementById('notebookFrame');
+var hotNewspaper = document.getElementById('hotNewspaper');
+var hotNewspaperGap = document.getElementById('hotNewspaperGap');
+var newspaperOverlay = document.getElementById('newspaperOverlay');
+var newspaperClose = document.getElementById('newspaperClose');
+var hotTape = document.getElementById('hotTape');
+var tapeOverlay = document.getElementById('tapeOverlay');
+var tapeClose = document.getElementById('tapeClose');
+var tapeFrame = document.getElementById('tapeFrame');
+var tapePlay = document.getElementById('tapePlay');
+var hotPolaroids = document.getElementById('hotPolaroids');
+var polaroidsOverlay = document.getElementById('polaroidsOverlay');
+var polaroidsClose = document.getElementById('polaroidsClose');
+var polaroidsFrame = document.getElementById('polaroidsFrame');
+var tapeAudioCtx, tapeOsc, tapeGain;
+function tapeAudioReady(cb){
+  if (!tapeAudioCtx) tapeAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (tapeAudioCtx.state === 'suspended') { tapeAudioCtx.resume().then(cb).catch(cb); }
+  else { cb(); }
+}
+var tapeAudioUrl = '../../assets/audio/tape-recording.mp3';
+var tapeBuffer = null, tapeBufferLoading = null, tapeSource = null;
+var tapeOffset = 0, tapeStartedAt = 0, tapeManualStop = false;
+function tapeLoadBuffer(){
+  if (tapeBuffer) return Promise.resolve(tapeBuffer);
+  if (!tapeBufferLoading) {
+    tapeBufferLoading = fetch(tapeAudioUrl).then(function(r){ return r.arrayBuffer(); })
+      .then(function(buf){ return tapeAudioCtx.decodeAudioData(buf); })
+      .then(function(decoded){ tapeBuffer = decoded; return decoded; });
+  }
+  return tapeBufferLoading;
+}
+function tapeAudioResume(){
+  if (!tapeAudioCtx) tapeAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (tapeAudioCtx.state === 'suspended') tapeAudioCtx.resume();
+  tapeLoadBuffer().then(function(buffer){
+    if (tapeSource) { tapeManualStop = true; try { tapeSource.stop(); } catch(e){} }
+    tapeSource = tapeAudioCtx.createBufferSource();
+    tapeSource.buffer = buffer;
+    var tapeVoiceGain = tapeAudioCtx.createGain();
+    tapeVoiceGain.gain.value = 2.6;
+    var tapeCompressor = tapeAudioCtx.createDynamicsCompressor();
+    tapeCompressor.threshold.value = -28;
+    tapeCompressor.knee.value = 24;
+    tapeCompressor.ratio.value = 10;
+    tapeCompressor.attack.value = 0.003;
+    tapeCompressor.release.value = 0.25;
+    tapeSource.connect(tapeVoiceGain).connect(tapeCompressor).connect(tapeAudioCtx.destination);
+    tapeManualStop = false;
+    var offset = tapeOffset % buffer.duration;
+    tapeStartedAt = tapeAudioCtx.currentTime - offset;
+    tapeSource.onended = function(){
+      if (tapeManualStop) return;
+      tapeOffset = 0;
+      tapeFrame.classList.remove('is-playing');
+      if (tapeOsc) { var t = tapeAudioCtx.currentTime; tapeGain.gain.linearRampToValueAtTime(0.0001, t + 0.2); tapeOsc.stop(t + 0.25); tapeOsc = null; }
+      tapeClickSound();
+    };
+    tapeSource.start(0, offset);
+  }).catch(function(){});
+}
+function tapeAudioHold(){
+  if (!tapeSource) return;
+  tapeManualStop = true;
+  tapeOffset = tapeAudioCtx.currentTime - tapeStartedAt;
+  try { tapeSource.stop(); } catch(e){}
+  tapeSource = null;
+}
+
+function tapeClickSound(){
+  tapeAudioReady(function(){
+    var t = tapeAudioCtx.currentTime;
+    var dur = 0.045;
+    var buf = tapeAudioCtx.createBuffer(1, Math.floor(tapeAudioCtx.sampleRate * dur), tapeAudioCtx.sampleRate);
+    var data = buf.getChannelData(0);
+    for (var i = 0; i < data.length; i++) { data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 3); }
+    var noise = tapeAudioCtx.createBufferSource();
+    noise.buffer = buf;
+    var filter = tapeAudioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 2200;
+    filter.Q.value = 0.25;
+    var clickGain = tapeAudioCtx.createGain();
+    clickGain.gain.value = 0.32;
+    noise.connect(filter).connect(clickGain).connect(tapeAudioCtx.destination);
+    noise.start(0);
+  });
+}
+function tapeSoundStart(){
+  var unlock = document.getElementById('silentUnlock');
+  if (unlock) { unlock.play().catch(function(){}); }
+  tapeClickSound();
+  tapeAudioReady(function(){
+    tapeOsc = tapeAudioCtx.createOscillator();
+    tapeGain = tapeAudioCtx.createGain();
+    tapeOsc.type = 'sine';
+    tapeOsc.frequency.value = 170;
+    tapeGain.gain.value = 0.0001;
+    tapeOsc.connect(tapeGain).connect(tapeAudioCtx.destination);
+    tapeOsc.start();
+    tapeGain.gain.linearRampToValueAtTime(0.0225, tapeAudioCtx.currentTime + 0.3);
+  });
+}
+function tapeSoundStop(){
+  tapeClickSound();
+  if (!tapeOsc) return;
+  var t = tapeAudioCtx.currentTime;
+  tapeGain.gain.linearRampToValueAtTime(0.0001, t + 0.2);
+  tapeOsc.stop(t + 0.25);
+  tapeOsc = null;
+}
+function tapeRewindSound(){
+  tapeAudioReady(function(){
+  var t = tapeAudioCtx.currentTime;
+  var dur = 0.9;
+  var osc = tapeAudioCtx.createOscillator();
+  var osc2 = tapeAudioCtx.createOscillator();
+  var lfo = tapeAudioCtx.createOscillator();
+  var lfoGain = tapeAudioCtx.createGain();
+  var filter = tapeAudioCtx.createBiquadFilter();
+  var gain = tapeAudioCtx.createGain();
+  osc.type = 'sawtooth';
+  osc2.type = 'square';
+  osc2.detune.value = -1200;
+  lfo.type = 'sine';
+  lfo.frequency.value = 24;
+  lfoGain.gain.value = 35;
+  lfo.connect(lfoGain);
+  lfoGain.connect(osc.frequency);
+  lfoGain.connect(osc2.frequency);
+  osc.frequency.setValueAtTime(240, t);
+  osc.frequency.exponentialRampToValueAtTime(950, t + dur);
+  osc2.frequency.setValueAtTime(240, t);
+  osc2.frequency.exponentialRampToValueAtTime(950, t + dur);
+  filter.type = 'bandpass';
+  filter.frequency.value = 1100;
+  filter.Q.value = 0.9;
+  gain.gain.setValueAtTime(0.0001, t);
+  gain.gain.linearRampToValueAtTime(0.09, t + 0.06);
+  gain.gain.linearRampToValueAtTime(0.09, t + dur - 0.12);
+  gain.gain.linearRampToValueAtTime(0.0001, t + dur);
+  osc.connect(filter);
+  osc2.connect(filter);
+  filter.connect(gain).connect(tapeAudioCtx.destination);
+  lfo.start(0);
+  osc.start(0);
+  osc2.start(0);
+  lfo.stop(t + dur + 0.05);
+  osc.stop(t + dur + 0.05);
+  osc2.stop(t + dur + 0.05);
+  });
+}
+
+
+/* Embeds keep playing while merely hidden, so tear them down on close. */
+function unloadSpotify(){
+  var wrap = document.getElementById('spotifyWrap');
+  if (!wrap || wrap.dataset.loaded !== 'true') return;
+  var frame = wrap.querySelector('iframe');
+  if (frame && frame.contentWindow) {
+    try { frame.contentWindow.postMessage({ command: 'pause' }, 'https://open.spotify.com'); } catch (e) {}
+  }
+  wrap.dataset.loaded = 'false';
+  wrap.innerHTML = '<button class="spotify-consent" id="spotifyConsent" type="button"><span class="spotify-consent-icon">&#9654;</span><span class="spotify-consent-label">Load Spotify player</span><span class="spotify-consent-note">Connects to Spotify\u2019s servers and may set cookies.</span></button>';
+  wrap.querySelector('#spotifyConsent').addEventListener('click', loadSpotify);
+}
+function unloadLaptop(){
+  var frame = laptopScreenInner && laptopScreenInner.querySelector('iframe');
+  if (frame) frame.src = frame.src;
+}
+/* Touchpoints: one dot per object. They appear shortly after the reader is back
+   at the desk and step aside while an object is open. */
+var dotsLayer = document.getElementById('dots');
+var dotEls = [];
+var dotsTimer;
+var dotsSeen = false;
+function buildDots(){
+  if (dotEls.length) return;
+  document.querySelectorAll('.hotspot:not(.off):not(.on):not(.no-dot)').forEach(function(spot){
+    var d = document.createElement('span');
+    d.className = 'dot';
+    dotEls.push({ el: d, spot: spot });
+    dotsLayer.appendChild(d);
+  });
+  placeDots();
+  window.addEventListener('resize', placeDots);
+}
+function placeDots(){
+  var box = stage.getBoundingClientRect();
+  if (!box.width) return;
+  dotEls.forEach(function(pair){
+    var r = pair.spot.getBoundingClientRect();
+    if (!r.width) return;
+    pair.el.style.left = ((r.left - box.left + r.width / 2) / box.width * 100) + '%';
+    pair.el.style.top = ((r.top - box.top + r.height / 2) / box.height * 100) + '%';
+  });
+}
+function showDots(){
+  dotsSeen = true;
+  buildDots();
+  placeDots();
+  dotEls.forEach(function(pair){ pair.el.classList.add('show'); });
+}
+/* First arrival at the desk gets the cues quickly; on every return the reader
+   has had a chance to explore, so they hold back. */
+function scheduleDots(){
+  clearTimeout(dotsTimer);
+  if (stage.classList.contains('lit-on')) dotsTimer = setTimeout(showDots, dotsSeen ? 5000 : 1500);
+}
+function hideDots(){
+  clearTimeout(dotsTimer);
+  dotEls.forEach(function(pair){ pair.el.classList.remove('show'); });
+}
+function retireDots(){ hideDots(); }
+function setLight(on){
+  stage.classList.toggle('lit-on', on);
+  hotOff.style.display = on ? 'none' : 'block';
+  hotOn.style.display = on ? 'block' : 'none';
+  hotPhone.style.display = on ? 'block' : 'none';
+  hotPlant.style.display = on ? 'block' : 'none';
+  hotManuscript.style.display = on ? 'block' : 'none';
+  hotNotes.style.display = on ? 'block' : 'none';
+  hotCherriesDirect.style.display = on ? 'block' : 'none';
+  hotIllustrations.style.display = on ? 'block' : 'none';
+  hotLaptop.style.display = on ? 'block' : 'none';
+  hotNotebook.style.display = on ? 'block' : 'none';
+  hotNewspaper.style.display = on ? 'block' : 'none';
+  hotNewspaperGap.style.display = on ? 'block' : 'none';
+  hotTape.style.display = on ? 'block' : 'none';
+  hotPolaroids.style.display = on ? 'block' : 'none';
+  if (!on) { hideDots(); phoneOverlay.classList.remove('show'); plantOverlay.classList.remove('show'); manuscriptOverlay.classList.remove('show'); notesOverlay.classList.remove('show'); laptopOverlay.classList.remove('show'); notebookOverlay.classList.remove('show'); notebookFrame.classList.remove('is-open'); newspaperOverlay.classList.remove('show'); tapeOverlay.classList.remove('show'); tapeFrame.classList.remove('is-playing'); tapeAudioHold(); tapeSoundStop(); unloadSpotify(); unloadLaptop(); galleryOverlay.classList.remove('show'); illustrationsOverlay.classList.remove('show'); polaroidsOverlay.classList.remove('show'); polaroidsFrame.classList.remove('is-developed'); }
+  if (on) {
+    scheduleDots();
+    clearTimeout(hintTimer);
+    clearTimeout(hintTimer2);
+    clearTimeout(tapTimer);
+    hint1.classList.remove('show');
+    hint2.classList.remove('show');
+    tapPoint.classList.remove('show');
+  }
+}
+
+hotOff.addEventListener('click', function(){ setLight(true); });
+hotOn.addEventListener('click', function(){ setLight(false); });
+hotPhone.addEventListener('click', function(){ phoneOverlay.classList.add('show'); fitSpotify(); });
+function loadSpotify(){
+  var wrap = document.getElementById('spotifyWrap');
+  if (wrap.dataset.loaded === 'true') return;
+  wrap.dataset.loaded = 'true';
+  var inner = document.createElement('div');
+  inner.className = 'spotify-wrap-inner';
+  /* The embed paints white until Spotify's own dark UI arrives — hold a black
+     layer over it until then. */
+  var loading = document.createElement('div');
+  loading.className = 'spotify-loading';
+  loading.innerHTML = '<i></i><i></i><i></i>';
+  var iframe = document.createElement('iframe');
+  iframe.src = 'https://open.spotify.com/embed/playlist/0OX1wy1RCRzPo2Wz6B0aZv?utm_source=generator&theme=0';
+  iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+  iframe.style.border = '0';
+  inner.appendChild(iframe);
+  var settle;
+  iframe.addEventListener('load', function(){
+    clearTimeout(settle);
+    settle = setTimeout(function(){
+      loading.classList.add('done');
+      setTimeout(function(){ if (loading.parentNode) loading.parentNode.removeChild(loading); }, 600);
+    }, 500);
+  });
+  setTimeout(function(){
+    loading.classList.add('done');
+    setTimeout(function(){ if (loading.parentNode) loading.parentNode.removeChild(loading); }, 600);
+  }, 6000);
+  wrap.innerHTML = '';
+  wrap.appendChild(inner);
+  wrap.appendChild(loading);
+  fitSpotify();
+}
+function fitSpotify(){
+  var wrap = document.getElementById('spotifyWrap');
+  var inner = wrap && wrap.querySelector('.spotify-wrap-inner');
+  if (!inner) return;
+  var box = wrap.getBoundingClientRect();
+  if (!box.width) return;
+  var k = 0.6667;
+  inner.style.width = (box.width / k) + 'px';
+  inner.style.height = (box.height / k) + 'px';
+  inner.style.transform = 'scale(' + k + ')';
+}
+window.addEventListener('resize', fitSpotify);
+var spotifyConsent = document.getElementById('spotifyConsent');
+if (spotifyConsent) { spotifyConsent.addEventListener('click', loadSpotify); }
+function closePhone(){ phoneOverlay.classList.remove('show'); unloadSpotify(); scheduleDots(); }
+phoneClose.addEventListener('click', closePhone);
+phoneOverlay.addEventListener('click', function(e){ if (e.target === phoneOverlay) closePhone(); });
+hotPlant.addEventListener('click', function(){ plantOverlay.classList.add('show'); });
+plantClose.addEventListener('click', function(){ plantOverlay.classList.remove('show'); });
+var plantAlive = document.getElementById('plantAlive');
+var aliveTimer;
+function plantReveal(){
+  clearTimeout(aliveTimer);
+  /* Only the top layer fades — the dried photo stays opaque underneath, so both
+     directions are a clean crossfade with no dip to the background. */
+  var alive = plantAlive.classList.toggle('show');
+  if (!alive) return;
+  aliveTimer = setTimeout(function(){ plantAlive.classList.remove('show'); }, 2000);
+}
+plantAlive.parentElement.querySelector('.dried').addEventListener('click', plantReveal);
+plantAlive.addEventListener('click', plantReveal);
+var manuscriptHint = document.getElementById('manuscriptHint');
+function updateManuscriptHint(){ manuscriptHint.style.opacity = (manuscriptIdx === manuscriptPages.length - 1) ? '0' : ''; }
+hotManuscript.addEventListener('click', function(){ manuscriptOverlay.classList.add('show'); manuscriptIdx = 0; manuscriptPages.forEach(function(img){ img.classList.toggle('active', +img.dataset.i === 0); }); updateManuscriptHint(); });
+manuscriptOverlay.addEventListener('click', function(e){
+  if (e.target.closest('.manuscript-close')) return;
+  manuscriptIdx = (manuscriptIdx + 1) % manuscriptPages.length;
+  manuscriptPages.forEach(function(img){ img.classList.toggle('active', +img.dataset.i === manuscriptIdx); });
+  updateManuscriptHint();
+});
+manuscriptClose.addEventListener('click', function(e){ e.stopPropagation(); manuscriptOverlay.classList.remove('show'); });
+hotNotes.addEventListener('click', function(){ notesOverlay.classList.add('show'); });
+notesClose.addEventListener('click', function(){ notesOverlay.classList.remove('show'); });
+hotCherriesDirect.addEventListener('click', function(e){ e.stopPropagation(); showGalleryImg(0); galleryOverlay.classList.add('show'); });
+galleryClose.addEventListener('click', function(){ galleryOverlay.classList.remove('show'); });
+galleryPrev.addEventListener('click', function(){ showGalleryImg(galleryIdx - 1); });
+galleryNext.addEventListener('click', function(){ showGalleryImg(galleryIdx + 1); });
+var hotIllustrations = document.getElementById('hotIllustrations');
+var illustrationsOverlay = document.getElementById('illustrationsOverlay');
+var illustrationsClose = document.getElementById('illustrationsClose');
+var illustrationsPrev = document.getElementById('illustrationsPrev');
+var illustrationsNext = document.getElementById('illustrationsNext');
+var illustrationsImgs = illustrationsOverlay.querySelectorAll('.gallery-frame img');
+var illustrationsCount = document.getElementById('illustrationsCount');
+var illustrationsIdx = 0;
+function showIllustrationsImg(i){
+  illustrationsIdx = (i + illustrationsImgs.length) % illustrationsImgs.length;
+  illustrationsImgs.forEach(function(img){ img.classList.toggle('active', +img.dataset.i === illustrationsIdx); });
+  illustrationsCount.textContent = (illustrationsIdx + 1) + ' / ' + illustrationsImgs.length;
+}
+hotIllustrations.addEventListener('click', function(e){ e.stopPropagation(); showIllustrationsImg(0); illustrationsOverlay.classList.add('show'); });
+illustrationsClose.addEventListener('click', function(){ illustrationsOverlay.classList.remove('show'); });
+illustrationsPrev.addEventListener('click', function(){ showIllustrationsImg(illustrationsIdx - 1); });
+illustrationsNext.addEventListener('click', function(){ showIllustrationsImg(illustrationsIdx + 1); });
+hotLaptop.addEventListener('click', function(){ laptopOverlay.classList.add('show'); fitLaptopScreen(); });
+laptopClose.addEventListener('click', function(){ laptopOverlay.classList.remove('show'); unloadLaptop(); });
+var laptopScreenInner = document.getElementById('laptopScreenInner');
+function fitLaptopScreen(){
+  var box = laptopScreenInner.parentElement.getBoundingClientRect();
+  var scale = Math.min(box.width / 900, box.height / 568);
+  laptopScreenInner.style.transform = 'scale(' + scale + ')';
+}
+window.addEventListener('resize', fitLaptopScreen);
+var notebookHint = document.getElementById('notebookHint');
+var notebookHintTimer;
+hotNotebook.addEventListener('click', function(){ notebookOverlay.classList.add('show'); notebookFrame.classList.remove('is-open'); notebookHintTimer = setTimeout(function(){ notebookHint.classList.add('show'); }, 1200); });
+notebookOverlay.addEventListener('click', function(e){
+  if (e.target.closest('.notebook-close')) return;
+  clearTimeout(notebookHintTimer);
+  notebookHint.classList.remove('show');
+  notebookFrame.classList.toggle('is-open');
+});
+notebookClose.addEventListener('click', function(e){ e.stopPropagation(); clearTimeout(notebookHintTimer); notebookHint.classList.remove('show'); notebookOverlay.classList.remove('show'); });
+function openNewspaper(){ newspaperOverlay.classList.add('show'); }
+hotNewspaper.addEventListener('click', openNewspaper);
+hotNewspaperGap.addEventListener('click', openNewspaper);
+newspaperClose.addEventListener('click', function(){ newspaperOverlay.classList.remove('show'); });
+hotTape.addEventListener('click', function(){ tapeOverlay.classList.add('show'); });
+tapePlay.addEventListener('click', function(){
+  var willPlay = !tapeFrame.classList.contains('is-playing');
+  tapeFrame.classList.toggle('is-playing');
+  if (willPlay) tapeAudioResume(); else tapeAudioHold();
+  if (willPlay) tapeSoundStart(); else tapeSoundStop();
+});
+tapeClose.addEventListener('click', function(e){ e.stopPropagation(); tapeOverlay.classList.remove('show'); tapeFrame.classList.remove('is-playing'); tapeAudioHold(); tapeSoundStop(); });
+document.querySelectorAll('.hotspot:not(.off):not(.on)').forEach(function(spot){
+  spot.addEventListener('click', retireDots);
+});
+if (/[?&]hotspots=1/.test(location.search)) document.body.setAttribute('data-debug-hotspots', 'true');
+document.addEventListener('keydown', function(e){
+  if (!e.shiftKey || (e.key !== 'H' && e.key !== 'h')) return;
+  var shown = document.body.getAttribute('data-debug-hotspots') === 'true';
+  document.body.setAttribute('data-debug-hotspots', shown ? 'false' : 'true');
+});
+/* Pinch-zoom does not reset on its own — briefly pinning maximum-scale makes
+   the browser return to 1× when the reader goes back to the desk. */
+function resetZoom(){
+  var vp = document.querySelector('meta[name="viewport"]');
+  if (!vp) return;
+  if (window.visualViewport && window.visualViewport.scale <= 1.01) return;
+  var base = 'width=device-width, initial-scale=1, viewport-fit=cover';
+  vp.setAttribute('content', base + ', maximum-scale=1, user-scalable=no');
+  setTimeout(function(){ vp.setAttribute('content', base); }, 400);
+}
+/* Any close button returns the reader to the desk — bring the cues back. */
+document.querySelectorAll('.phone-close, .plant-close, .manuscript-close, .notes-close, .gallery-close, .laptop-close, .notebook-close, .newspaper-close, .tape-close, .polaroids-close').forEach(function(btn){
+  btn.addEventListener('click', scheduleDots);
+  btn.addEventListener('click', resetZoom);
+});
+document.addEventListener('keydown', function(e){
+  if (e.key !== 'Escape') return;
+  if (phoneOverlay.classList.contains('show')) return closePhone();
+  scheduleDots();
+  if (laptopOverlay.classList.contains('show')) { laptopOverlay.classList.remove('show'); return unloadLaptop(); }
+  if (tapeOverlay.classList.contains('show')) { tapeOverlay.classList.remove('show'); tapeFrame.classList.remove('is-playing'); tapeAudioHold(); return tapeSoundStop(); }
+  var open = document.querySelector('.plant-overlay.show, .manuscript-overlay.show, .notes-overlay.show, .gallery-overlay.show, .notebook-overlay.show, .newspaper-overlay.show, .polaroids-overlay.show');
+  if (open) {
+    open.classList.remove('show');
+    if (open === notebookOverlay) notebookFrame.classList.remove('is-open');
+    if (open === polaroidsOverlay) polaroidsFrame.classList.remove('is-developed');
+  }
+});
+/* 5. Keep hidden overlays out of the tab order — opacity:0 alone stays focusable. */
+(function(){
+  var overlays = document.querySelectorAll('.phone-overlay, .plant-overlay, .manuscript-overlay, .notes-overlay, .gallery-overlay, .laptop-overlay, .notebook-overlay, .newspaper-overlay, .tape-overlay, .polaroids-overlay');
+  function syncInert(el){
+    var open = el.classList.contains('show');
+    el.setAttribute('aria-hidden', open ? 'false' : 'true');
+    el.querySelectorAll('button, a, iframe').forEach(function(node){
+      if (open) node.removeAttribute('tabindex'); else node.setAttribute('tabindex', '-1');
+    });
+  }
+  overlays.forEach(function(el){
+    syncInert(el);
+    new MutationObserver(function(){ syncInert(el); }).observe(el, { attributes: true, attributeFilter: ['class'] });
+  });
+})();
+hotPolaroids.addEventListener('click', function(){ polaroidsOverlay.classList.add('show'); });
+polaroidsOverlay.addEventListener('click', function(e){
+  if (e.target.closest('.polaroids-close')) return;
+  polaroidsFrame.classList.add('is-developed');
+});
+polaroidsClose.addEventListener('click', function(e){ e.stopPropagation(); polaroidsOverlay.classList.remove('show'); polaroidsFrame.classList.remove('is-developed'); });
+
+document.addEventListener('touchend', function(){
+  var kickAudio = document.getElementById('silentUnlock');
+  if (kickAudio) { kickAudio.play().catch(function(){}); }
+  if (!tapeAudioCtx) tapeAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  var primeUnlock = function(){
+    var dur = 0.4;
+    var len = Math.floor(tapeAudioCtx.sampleRate * dur);
+    var buf = tapeAudioCtx.createBuffer(1, len, tapeAudioCtx.sampleRate);
+    var data = buf.getChannelData(0);
+    for (var i = 0; i < len; i++) { data[i] = (Math.random() * 2 - 1) * 0.002; }
+    var src = tapeAudioCtx.createBufferSource();
+    src.buffer = buf;
+    src.connect(tapeAudioCtx.destination);
+    src.start(0);
+  };
+  if (tapeAudioCtx.state === 'suspended') { tapeAudioCtx.resume().then(primeUnlock).catch(primeUnlock); }
+  else { primeUnlock(); }
+}, { once: true, passive: true });
+document.addEventListener('click', function(e){
+  var el = e.target.closest('button, .notebook-frame, .manuscript-frame, .polaroids-frame, .dried');
+  if (!el || el === tapePlay) return;
+  tapeClickSound();
+}, true);
+(function () {
+  var legal = document.querySelector('.qr-legal');
+  if (!legal) return;
+  var nearT;
+  function near() {
+    legal.setAttribute('data-near', 'true');
+    clearTimeout(nearT);
+    nearT = setTimeout(function () { legal.setAttribute('data-near', 'false'); }, 2600);
+  }
+  function check(y) { if (y >= window.innerHeight - 120) near(); }
+  window.addEventListener('pointermove', function (e) { check(e.clientY); }, { passive: true });
+  window.addEventListener('touchstart', function (e) {
+    if (e.touches && e.touches[0]) check(e.touches[0].clientY);
+  }, { passive: true });
+})();
+</script>
+<!-- ═══════════ GoatCounter — page views + JS-error events ═══════════ -->
+<script data-goatcounter="https://annagreyhem.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+/* Report any uncaught JS error as a GoatCounter event, grouped under js-error/… */
+(function () {
+  function report(label) {
+    try {
+      var fire = function () {
+        window.goatcounter.count({
+          path:  'js-error' + location.pathname,
+          title: String(label).slice(0, 240),
+          event: true
+        });
+      };
+      if (window.goatcounter && window.goatcounter.count) return fire();
+      var n = 0, t = setInterval(function () {
+        if (window.goatcounter && window.goatcounter.count) { clearInterval(t); fire(); }
+        else if (++n > 30) clearInterval(t);
+      }, 500);
+    } catch (_) {}
+  }
+  window.addEventListener('error', function (e) {
+    report((e.message || 'error') + ' @ ' + (e.filename || '') + ':' + (e.lineno || 0));
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    var r = e.reason;
+    report('promise: ' + ((r && (r.message || r)) || 'unhandledrejection'));
+  });
+})();
+</script>
+</body>
+</html>
