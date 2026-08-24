@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /rabbit-hole/revealed
+Disallow: /how-life-feels/
+Disallow: /qr/
 
-# Vor Release: nur rabbit-hole, impressum, datenschutz, ai-info sind live.
-# sitemap.xml auf sitemap-prerelease.xml umstellen und nach Release zurück wechseln.
-Sitemap: https://annagreyhem.com/sitemap-prerelease.xml
+Sitemap: https://annagreyhem.com/sitemap.xml
