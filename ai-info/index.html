@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Sentry error monitoring -->
+<script
+  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
+  crossorigin="anonymous"
+></script>
+<script>
+  Sentry.onLoad(function () {
+    Sentry.init({
+      release: "anna-greyhem-website@1.0.0",
+    });
+  });
+</script>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0a0c" />
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/images/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="icon" href="/assets/images/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+<title>AI Info — Anna Greyhem</title>
+<meta name="robots" content="noindex, follow" />
+<link rel="canonical" href="https://annagreyhem.com/ai-info/" />
+<meta name="description" content="A note on transparency about creative process and the use of AI." />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Anna Greyhem" />
+<meta property="og:title" content="AI Info — Anna Greyhem" />
+<meta property="og:description" content="A note on transparency about creative process and the use of AI." />
+<meta property="og:url" content="https://annagreyhem.com/ai-info/" />
+<meta property="og:image" content="https://annagreyhem.com/assets/images/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="AI Info — Anna Greyhem" />
+<meta name="twitter:description" content="A note on transparency about creative process and the use of AI." />
+<meta name="twitter:image" content="https://annagreyhem.com/assets/images/og-image.png" />
+<link rel="stylesheet" href="../assets/fonts/fonts.css">
+<style>
+:root {
+  --ink:     #0a0a0c;
+  --bone:    #eeeae0;
+  --bone-2:  #c9c4b8;
+  --bone-3:  #8a8478;
+  --bone-4:  #2a2823;
+  --cherry:   #9e2438;
+  --cherry-2: #6b1825;
+  --cherry-3: #c33149;
+  --serif: 'Cormorant Garamond', 'EB Garamond', Garamond, serif;
+  --read:  'Newsreader', 'Cormorant Garamond', Georgia, serif;
+  --mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+  --hair: 1px solid var(--bone-4);
+  --header-h: 60px;
+  --gutter: clamp(18px, 5vw, 56px);
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--ink); color: var(--bone); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+body { font-family: var(--read); font-weight: 500; font-size: 18px; line-height: 1.72; overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; }
+body.menu-locked { overflow: hidden; }
+a { color: inherit; }
+.grain { position: fixed; inset: -50%; pointer-events: none; z-index: 70; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95  0 0 0 0 0.92  0 0 0 0 0.85  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); opacity: 0.05; mix-blend-mode: overlay; animation: grain 1.2s steps(6) infinite; }
+@keyframes grain { 0%{transform:translate(0,0)} 20%{transform:translate(-4%,2%)} 40%{transform:translate(3%,-3%)} 60%{transform:translate(-2%,4%)} 80%{transform:translate(4%,-2%)} 100%{transform:translate(0,0)} }
+.site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 80; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: var(--header-h); padding: 0 var(--gutter); padding-top: env(safe-area-inset-top); border-bottom: 1px solid transparent; transition: opacity .8s ease, transform .5s var(--ease), background .5s ease, border-color .5s ease, backdrop-filter .5s ease; }
+.site-header[data-revealed="false"] { opacity: 0; pointer-events: none; transform: translateY(-6px); }
+.site-header[data-revealed="true"]  { opacity: 1; }
+.site-header[data-scrolled="true"] { background: rgba(10,10,12,0.66); backdrop-filter: blur(12px) saturate(1.1); -webkit-backdrop-filter: blur(12px) saturate(1.1); border-bottom-color: var(--bone-4); }
+.burger { grid-column: 1; justify-self: start; grid-row: 1; display: inline-flex; align-items: center; gap: 11px; background: none; border: 0; cursor: pointer; color: var(--bone); min-height: 44px; padding: 0 4px; margin-left: -4px; }
+.burger .bars { display: flex; flex-direction: column; justify-content: space-between; width: 24px; height: 13px; }
+.burger .bars i { display: block; height: 1px; background: currentColor; transition: transform .4s var(--ease); }
+.burger:hover .bars i:first-child { transform: translateX(2px); }
+.burger:hover .bars i:last-child  { transform: translateX(-2px); }
+.mlabel { display: none; font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--bone-2); }
+@media (min-width: 820px) { .mlabel { display: inline; } }
+.hw { grid-row: 1; font-family: var(--serif); font-weight: 300; font-size: clamp(20px, 5.4vw, 24px); line-height: 1; color: var(--bone); text-decoration: none; white-space: nowrap; letter-spacing: 0.01em; transition: color .4s ease, opacity .5s ease, transform .5s var(--ease); }
+.hw em { font-style: italic; }
+.hw:hover { color: #fff; }
+.site-header .hw { grid-column: 2; justify-self: center; opacity: 0; transform: translateY(-6px); pointer-events: none; }
+.site-header[data-pasthero="true"] .hw { opacity: 1; transform: none; pointer-events: auto; }
+.menu { position: fixed; inset: 0; z-index: 90; background: rgba(8,8,10,0.97); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: opacity .45s ease; }
+.menu[data-open="true"] { opacity: 1; pointer-events: auto; }
+.menu-top { min-height: var(--header-h); padding: 0 var(--gutter); padding-top: env(safe-area-inset-top); display: flex; align-items: center; justify-content: space-between; }
+.menu-close { display: inline-flex; align-items: center; gap: 11px; background: none; border: 0; cursor: pointer; color: var(--bone); min-height: 44px; padding: 0 4px; margin-left: -4px; }
+.menu-close .x { width: 20px; height: 20px; position: relative; display: block; }
+.menu-close .x::before, .menu-close .x::after { content: ""; position: absolute; top: 50%; left: 1px; right: 1px; height: 1px; background: currentColor; }
+.menu-close .x::before { transform: rotate(45deg); }
+.menu-close .x::after  { transform: rotate(-45deg); }
+.menu-close .mlabel { display: inline; }
+.menu-top .hw { position: static; opacity: 1; transform: none; pointer-events: auto; }
+.menu-nav { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: clamp(6px, 1.6vh, 16px); padding: 0 clamp(20px, 6vw, 64px); }
+.menu-nav a { display: flex; align-items: baseline; gap: 18px; font-family: var(--serif); font-weight: 300; font-style: italic; font-size: clamp(44px, 13vw, 92px); line-height: 1.04; color: var(--bone); text-decoration: none; width: max-content; max-width: 100%; transition: color .4s ease, transform .4s var(--ease); }
+.menu-nav a .idx { font-family: var(--mono); font-style: normal; font-size: 12px; letter-spacing: 0.2em; color: var(--bone-3); transform: translateY(-0.4em); transition: color .4s ease; }
+.menu-nav a:hover, .menu-nav a:focus-visible { color: #fff; transform: translateX(10px); outline: none; }
+.menu-nav a:hover .idx, .menu-nav a:focus-visible .idx { color: var(--cherry-3); }
+.menu[data-open="true"] .menu-nav a { animation: rise .7s var(--ease) backwards; }
+.menu[data-open="true"] .menu-nav a:nth-child(1) { animation-delay: .06s; }
+.menu[data-open="true"] .menu-nav a:nth-child(2) { animation-delay: .14s; }
+.menu[data-open="true"] .menu-nav a:nth-child(3) { animation-delay: .22s; }
+@keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+.menu-foot { padding: clamp(20px, 5vw, 40px) clamp(20px, 6vw, 64px); padding-bottom: calc(clamp(20px, 5vw, 40px) + env(safe-area-inset-bottom)); display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; border-top: 1px solid var(--bone-4); }
+.menu-foot a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bone-3); text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; transition: color .4s ease; }
+.menu-foot a:hover { color: var(--bone-2); text-decoration: underline; text-underline-offset: 3px; }
+.menu-foot .sep { color: var(--bone-4); }
+main { position: relative; z-index: 5; flex: 1; }
+.page { max-width: 760px; margin: 0 auto; padding: calc(var(--header-h) + clamp(40px, 7vh, 76px)) var(--gutter) clamp(80px, 12vh, 140px); }
+.page-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--cherry-3); margin-bottom: clamp(22px, 4vh, 34px); }
+.page-title { font-family: var(--serif); font-weight: 300; font-style: normal; font-size: clamp(48px, 9vw, 104px); line-height: 0.98; letter-spacing: -0.02em; margin: 0; color: var(--bone); }
+.rule { display: block; width: 100%; height: 1px; border: 0; background: var(--bone-4); margin: clamp(28px, 5vh, 44px) 0 clamp(28px, 5vh, 40px); }
+.page p { margin: 0 0 1.2em; color: var(--bone); font-family: var(--read); font-weight: 400; font-size: clamp(17px, 1.6vw, 19px); line-height: 1.8; max-width: 60ch; }
+.page p.lead { font-family: var(--serif); font-weight: 300; font-style: italic; font-size: clamp(24px, 3vw, 34px); color: var(--bone-2); line-height: 1.4; margin-bottom: clamp(32px, 5vh, 48px); letter-spacing: -0.005em; max-width: 30ch; }
+.foot { position: relative; z-index: 5; border-top: 1px solid var(--bone-4); padding: 24px var(--gutter) calc(24px + env(safe-area-inset-bottom)); display: flex; flex-flow: row wrap; align-items: center; justify-content: center; gap: 2px 14px; text-align: center; margin-top: auto; }
+.foot-mark { font-family: var(--serif); font-weight: 300; font-size: 16px; color: var(--bone); text-decoration: none; width: max-content; transition: color .4s ease; }
+.foot-mark em { font-style: italic; }
+.foot-mark:hover { color: #fff; }
+.foot-legal { display: flex; flex-wrap: wrap; gap: 2px 12px; align-items: center; }
+.foot-legal::before { content: "·"; color: var(--bone-4); }
+.foot-legal a { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bone-3); text-decoration: none; min-height: 34px; display: inline-flex; align-items: center; transition: color .4s ease; }
+.foot-legal a span { border-bottom: 1px solid transparent; padding-bottom: 2px; transition: border-color .4s ease; }
+.foot-legal a:hover { color: var(--bone-2); }
+.foot-legal a:hover span { border-color: var(--bone-3); }
+.foot-legal .sep { color: var(--bone-4); }
+@media (max-width: 699px) {
+  .foot { flex-direction: column; flex-wrap: nowrap; align-items: flex-start; justify-content: flex-start; text-align: left; gap: 8px; }
+  .foot-mark { font-size: 22px; letter-spacing: -0.01em; }
+  .foot-legal { flex-wrap: nowrap; gap: 0 1.6vw; white-space: nowrap; }
+  .foot-legal::before { content: none; }
+  .foot-legal a { font-size: clamp(7.5px, 2.45vw, 10px); letter-spacing: 0.06em; }
+}
+@media (min-width: 700px) {
+  .foot { flex-wrap: nowrap; justify-content: space-between; align-items: flex-end; text-align: left; gap: 22px; padding: 44px var(--gutter) calc(40px + env(safe-area-inset-bottom)); }
+  .foot-mark { font-size: 28px; }
+  .foot-legal { gap: 8px 22px; }
+  .foot-legal::before { content: none; }
+  .foot-legal a { font-size: 11px; letter-spacing: 0.16em; min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+</style>
+</head>
+<body data-screen-label="AI Info (plain)">
+
+<span class="grain" aria-hidden="true"></span>
+
+<header class="site-header" data-revealed="true" data-pasthero="true" data-scrolled="false">
+  <a class="hw" href="../">Anna <em>Greyhem</em></a>
+</header>
+
+
+<main>
+  <article class="page">
+    <div class="page-eyebrow">Process</div>
+    <h1 class="page-title">AI Info</h1>
+
+    <hr class="rule">
+
+    <p class="lead">I value transparency about my creative process and the use of AI.</p>
+
+    <p>For this artwork, I used AI to generate the images of the working space. The images incorporated within it — including the cherry collection and the Polaroids — are original photographs taken by me.</p>
+
+    <p>When I use AI, each piece is shaped by my own artistic vision and creative decisions. AI allows me to explore and visualize ideas that begin in my imagination, helping me bring concepts into a tangible visual form.</p>
+
+  </article>
+</main>
+
+<footer class="foot">
+  <a class="foot-mark" href="../">Anna <em>Greyhem</em></a>
+  <div class="foot-legal">
+    <a href="../impressum-plain/"><span>Legal Notice</span></a>
+    <span class="sep">·</span>
+    <a href="../datenschutz-plain/"><span>Privacy Policy</span></a>
+    <span class="sep">·</span>
+    <a href="../ai-info-plain/"><span>AI Info</span></a>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const menu = document.querySelector('.menu');
+  const burger = document.querySelector('.burger');
+  const closeBtn = document.querySelector('.menu-close');
+  if (menu && burger) {
+    const open = () => { menu.dataset.open = 'true'; menu.setAttribute('aria-hidden', 'false'); document.body.classList.add('menu-locked'); };
+    const close = () => { menu.dataset.open = 'false'; menu.setAttribute('aria-hidden', 'true'); document.body.classList.remove('menu-locked'); };
+    burger.addEventListener('click', open);
+    closeBtn && closeBtn.addEventListener('click', close);
+    menu.addEventListener('click', (e) => { if (e.target === menu) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu.dataset.open === 'true') close(); });
+    menu.querySelectorAll('.menu-nav a, .menu-foot a').forEach((a) => { a.addEventListener('click', () => setTimeout(close, 120)); });
+  }
+  const header = document.querySelector('.site-header');
+  if (header) {
+    const onScroll = () => {
+      const y = window.scrollY;
+      header.dataset.scrolled = y > 40 ? 'true' : 'false';
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+})();
+</script>
+
+<!-- ═══════════ GoatCounter — page views + JS-error events ═══════════ -->
+<script data-goatcounter="https://annagreyhem.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+(function () {
+  function report(label) {
+    try {
+      var fire = function () {
+        window.goatcounter.count({
+          path:  'js-error' + location.pathname,
+          title: String(label).slice(0, 240),
+          event: true
+        });
+      };
+      if (window.goatcounter && window.goatcounter.count) return fire();
+      var n = 0, t = setInterval(function () {
+        if (window.goatcounter && window.goatcounter.count) { clearInterval(t); fire(); }
+        else if (++n > 30) clearInterval(t);
+      }, 500);
+    } catch (_) {}
+  }
+  window.addEventListener('error', function (e) {
+    report((e.message || 'error') + ' @ ' + (e.filename || '') + ':' + (e.lineno || 0));
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    var r = e.reason;
+    report('promise: ' + ((r && (r.message || r)) || 'unhandledrejection'));
+  });
+})();
+</script>
+
+</body>
+</html>
