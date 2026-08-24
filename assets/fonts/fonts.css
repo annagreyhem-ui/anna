@@ -1,0 +1,58 @@
+/* =====================================================
+   ANNA GREYHEM — self-hosted webfonts
+   Variable fonts, loaded locally (no Google Fonts).
+   url() paths resolve relative to THIS file (assets/fonts/),
+   so every page links it regardless of its own depth.
+
+   --serif : Cormorant Garamond  (display)      wght 300–700
+   --read  : Newsreader          (reading text) opsz+wght
+   --mono  : JetBrains Mono       (labels)       wght
+   ===================================================== */
+
+/* ---------- Cormorant Garamond — display serif ---------- */
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('CormorantGaramond-VariableFont_wght.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: italic;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('CormorantGaramond-Italic-VariableFont_wght.ttf') format('truetype');
+}
+
+/* ---------- Newsreader — reading text ---------- */
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('Newsreader-VariableFont.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Newsreader';
+  font-style: italic;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('Newsreader-Italic-VariableFont.ttf') format('truetype');
+}
+
+/* ---------- JetBrains Mono — labels / coordinates ---------- */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('JetBrainsMono-VariableFont_wght.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: italic;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('JetBrainsMono-Italic-VariableFont_wght.ttf') format('truetype');
+}
