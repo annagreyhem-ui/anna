@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en" translate="no" class="notranslate">
+<head>
+<!-- Sentry error monitoring -->
+<script
+  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
+  crossorigin="anonymous"
+></script>
+<script>
+  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
+  Sentry.onLoad(function () {
+    Sentry.init({
+      release: "anna-greyhem-website@1.0.0",
+    });
+  });
+</script>
+
+<!--
+  QR EDITION: goodbye
+  Built on the shared QR base — palette, grain, foot-scrim and .qr-legal
+  come from qr-base.css. The typewriter is the same engine and look as the
+  breathing-water/alice "Dear reader" letter. Alice's held breaths (the
+  book's "…") are the pauses; nothing is typed for them.
+-->
+<meta charset="UTF-8">
+<meta name="google" content="notranslate" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0c">
+<title>Goodbye — Anna Greyhem</title>
+<link rel="canonical" href="https://annagreyhem.com/how-life-feels/goodbye/" />
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/images/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="icon" href="/assets/images/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+<link rel="stylesheet" href="../../assets/fonts/fonts.css">
+<link rel="stylesheet" href="../../assets/css/qr-base.css">
+<script src="../../assets/js/qr-viewport-fix.js"></script>
+<script>
+/* Preview-only safety net: some preview servers don't tokenise relative asset
+   links, blocking the shared stylesheets. If the design tokens are missing,
+   re-link them with the current auth token. In production this is a no-op. */
+(function(){
+  function fix(){
+    if (getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()) return;
+    var t = (location.search.match(/[?&]t=([^&]+)/) || [])[1];
+    if (!t) return;
+    var base = location.href.split('/how-life-feels/')[0] + '/';
+    ['assets/fonts/fonts.css','assets/css/qr-base.css'].forEach(function(p){
+      var l = document.createElement('link'); l.rel = 'stylesheet';
+      l.href = base + p + '?t=' + t; document.head.appendChild(l);
+    });
+  }
+  if (document.readyState !== 'loading') fix();
+  else document.addEventListener('DOMContentLoaded', fix);
+})();
+</script>
+<style>
+  body {
+    font-family: var(--read);
+    font-size: var(--read-immersive);
+    line-height: 1.85;
+  }
+
+  /* ---- TYPEWRITER page (identical to breathing-water/alice) ---- */
+  #typewriter-page { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 40px; }
+  #typewriter-text {
+    max-width:36rem; width:88vw; white-space:pre-wrap; tab-size:6;
+    font-family:var(--read); font-size:var(--read-immersive); line-height:1.85;
+    color:var(--bone); min-height:200px;
+  }
+
+  /* typewriter — each glyph lands instantly, like a real keystroke */
+  .tw-ch { opacity:0; animation:tw-in 0.09s linear forwards; }
+  @keyframes tw-in { to { opacity:1; } }
+  /* the signature, in Alice's hand */
+  .tw-sig {
+    font-family:var(--serif); font-style:italic; font-size:1.5em;
+    color:#f6f2e8; letter-spacing:0.02em; line-height:1.4;
+  }
+  /* a real text caret — hard blink, no glow, solid while typing */
+  .tw-caret {
+    display:inline-block; width:2px; height:1.12em;
+    margin-left:1px; vertical-align:-0.17em; border-radius:0.5px;
+    background:var(--bone);
+    animation:tw-blink 1.06s step-end infinite;
+  }
+  .tw-caret.typing { animation:none; opacity:1; }
+  @keyframes tw-blink { 0%,50%{opacity:1} 50.01%,100%{opacity:0} }
+
+  @media (max-width:600px) { #typewriter-page { padding:60px 24px; } }
+
+  /* Legal footer: keep it permanently legible (Impressum / Datenschutz
+     must stay easily recognisable), still quiet against the dark.
+     !important so it survives the preview safety-net re-appending qr-base.css. */
+  .qr-legal { opacity:0.5 !important; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tw-ch { animation:none; opacity:1; }
+    .tw-caret { animation:none; }
+  }
+
+</style>
+</head>
+<body data-screen-label="QR · Goodbye">
+
+<span class="grain" aria-hidden="true"></span>
+
+<div id="typewriter-page">
+  <div id="typewriter-text" aria-live="polite"></div>
+</div>
+
+<nav class="qr-legal" aria-label="Legal">
+  <a class="mark" href="https://annagreyhem.com/">Anna <em>Greyhem</em></a>
+  <span class="sep" aria-hidden="true">·</span>
+  <a href="https://annagreyhem.com/impressum/">Legal Notice</a>
+  <span class="sep" aria-hidden="true">·</span>
+  <a href="https://annagreyhem.com/datenschutz/">Privacy</a>
+</nav>
+
+<script>
+(function () {
+  "use strict";
+
+  /* Blocks type in order, one paragraph each (\n\n between them). A \n inside
+     a block is a soft line break. pauseAfter holds a beat once the block is
+     typed — that is where the book's "…" go: breaths, not dots.
+     sig = signature in Alice's italic hand. cont/midPause = type text, hold a
+     breath (a "…"), then finish the sentence on the same line. */
+  var twBlocks = [
+    { text: 'Dear reader,' },
+    { text: 'So you made it back.\nI watched you the whole time. Every page.' },
+    { text: 'You were so close. I could almost touch you.\nBut you chose her.' },
+    { text: 'Why?\nWhy didn\u2019t you want to play with me?', pauseAfter: 3200 },   // …
+    { text: 'But I do understand. You are a moth.\nYou always fly towards the light. Even when it burns.' },
+    { text: 'Enjoy being alive. While it lasts.', pauseAfter: 2600 },
+    { sig: 'Alice' },
+    { text: 'Oh, and', midPause: 1500, cont: ' when you meet death, give him a kiss from me.' }   // …
+  ];
+
+  var textEl = document.getElementById('typewriter-text');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var caret = document.createElement('span');
+  caret.className = 'tw-caret';
+  caret.setAttribute('aria-hidden', 'true');
+  textEl.appendChild(caret);
+
+  var settings = { min:34, max:72, punctPause:170, paraPause:920, thinkPause:1200 };
+
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function rand(a, b) { return Math.random() * (b - a) + a; }
+
+  function addChar(ch, cls) {
+    var s = document.createElement('span');
+    s.className = 'tw-ch' + (cls ? ' ' + cls : '');
+    s.textContent = ch;
+    textEl.insertBefore(s, caret);
+    keepInView();
+  }
+
+  /* Follow the ink: once the caret slides under the transparent foot-scrim,
+     ease the page down so the line being typed stays clear of the footer. */
+  var footMargin = 250;   // foot-scrim (150px) + the quiet legal line, with breathing room
+  function keepInView() {
+    var overshoot = caret.getBoundingClientRect().bottom - (window.innerHeight - footMargin);
+    if (overshoot > 1) window.scrollBy({ top: overshoot, behavior: 'smooth' });
+  }
+
+  /* Once the letter is finished, lift the final line a touch higher so the last
+     sentence sits clearly above the transparent foot-scrim, not tucked behind it.
+     The footer/scrim are position:fixed, so there is no natural content below the
+     last line to scroll into — add a spacer first, then scroll. */
+  function liftTail() {
+    var chars = textEl.querySelectorAll('.tw-ch');
+    if (!chars.length) return;
+    var spacer = document.createElement('div');
+    spacer.style.height = '7vh';
+    spacer.setAttribute('aria-hidden', 'true');
+    document.getElementById('typewriter-page').appendChild(spacer);
+    requestAnimationFrame(function () {
+      var lastBottom = chars[chars.length - 1].getBoundingClientRect().bottom;
+      // lift the final line up, clear of the scrim
+      var overshoot = lastBottom - (window.innerHeight * 0.78);
+      if (overshoot > 1) window.scrollBy({ top: overshoot, behavior: 'smooth' });
+    });
+  }
+
+  async function typeText(str, cls) {
+    caret.classList.add('typing');
+    for (var i = 0; i < str.length; i++) {
+      var ch = str[i];
+      addChar(ch, cls);
+      if (reduce) { continue; }
+      var delay = rand(settings.min, settings.max);
+      if (',.!?\u2026'.indexOf(ch) >= 0) delay += settings.punctPause;
+      if (ch === '\n') delay += 100;
+      await sleep(delay);
+    }
+    caret.classList.remove('typing');
+  }
+
+  async function run() {
+    await sleep(reduce ? 0 : 900);
+    for (var i = 0; i < twBlocks.length; i++) {
+      var block = twBlocks[i];
+
+      if (i !== 0) {
+        addChar('\n'); addChar('\n');
+        await sleep(reduce ? 0 : settings.paraPause);
+      }
+      if (i === 0) await sleep(reduce ? 0 : settings.thinkPause);
+
+      if (block.text) await typeText(block.text);
+      if (block.sig)  await typeText(block.sig, 'tw-sig');
+
+      if (block.pauseAfter) await sleep(reduce ? 0 : block.pauseAfter);
+      if (block.cont) {
+        await sleep(reduce ? 0 : block.midPause || 1200);
+        await typeText(block.cont);
+      }
+    }
+    await sleep(reduce ? 0 : 1400);
+    caret.remove();
+    liftTail();
+  }
+
+  run();
+
+  /* LEGAL footer — brighten near the bottom edge */
+  (function () {
+    var legal = document.querySelector('.qr-legal');
+    if (!legal) return;
+    var nearT;
+    function near() {
+      legal.setAttribute('data-near', 'true');
+      clearTimeout(nearT);
+      nearT = setTimeout(function () { legal.setAttribute('data-near', 'false'); }, 2600);
+    }
+    function check(y) { if (y >= window.innerHeight - 120) near(); }
+    window.addEventListener('pointermove', function (e) { check(e.clientY); }, { passive: true });
+    window.addEventListener('touchstart', function (e) {
+      if (e.touches && e.touches[0]) check(e.touches[0].clientY);
+    }, { passive: true });
+  })();
+})();
+</script>
+
+<!-- ═══════════ GoatCounter — page views + JS-error events ═══════════ -->
+<script data-goatcounter="https://annagreyhem.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+/* Report any uncaught JS error as a GoatCounter event, grouped under js-error/… */
+(function () {
+  function report(label) {
+    try {
+      var fire = function () {
+        window.goatcounter.count({
+          path:  'js-error' + location.pathname,
+          title: String(label).slice(0, 240),
+          event: true
+        });
+      };
+      if (window.goatcounter && window.goatcounter.count) return fire();
+      var n = 0, t = setInterval(function () {
+        if (window.goatcounter && window.goatcounter.count) { clearInterval(t); fire(); }
+        else if (++n > 30) clearInterval(t);
+      }, 500);
+    } catch (_) {}
+  }
+  window.addEventListener('error', function (e) {
+    report((e.message || 'error') + ' @ ' + (e.filename || '') + ':' + (e.lineno || 0));
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    var r = e.reason;
+    report('promise: ' + ((r && (r.message || r)) || 'unhandledrejection'));
+  });
+})();
+</script>
+
+</body>
+</html>
