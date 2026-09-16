@@ -836,7 +836,7 @@ const FORM_ENDPOINT = SUPABASE_URL ? SUPABASE_URL.replace(/\/$/, '') + "/functio
         if (!r.ok) throw new Error('HTTP ' + r.status);
       } catch (e2) {
         btn.disabled = false; delete btn.dataset.busy; btn.style.opacity = '';
-        return fail('Something went wrong. Please try again, or write to hello@annagreyhem.com.');
+        return fail('Something went wrong. Please try again, or write to annagreyhem@gmail.com.');
       }
     } else {
       console.info('[creators] no SUPABASE_URL set — submission not stored:', data);
